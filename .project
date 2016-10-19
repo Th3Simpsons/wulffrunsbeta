@@ -39,8 +39,8 @@
 			<value>$%7BPROJECT_LOC%7D/target/generated-sources</value>
 		</variable>
 		<variable>
-			<name>GeneratedSources1</name>
-			<value>$%7BPARENT-1-PROJECT_LOC%7D/WulffRunsBeta/target/generated-sources</value>
+			<name>src_test</name>
+			<value>$%7Bsrc_test%7D</value>
 		</variable>
 	</variableList>
 </projectDescription>
