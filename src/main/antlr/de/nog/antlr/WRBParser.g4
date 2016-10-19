@@ -11,8 +11,9 @@ options{
 
 statement : expression | assign;
 expression : addition;
-addition : constant ( operator +=(ADD|SUB)) constant;
-constant: INTEGER;
+addition : multi ( operator +=(ADD|SUB)) multi;
+multi : pow ( operator +=(MUL|DIV)) pow;
+pow: INTEGER;
 
 
 //statement : assign | expression;
