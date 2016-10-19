@@ -19,7 +19,7 @@
  *
  */
 
-package de.nog.anttest;
+package src.test.java.de.nog.anttest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

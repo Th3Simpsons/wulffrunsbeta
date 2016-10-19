@@ -17,7 +17,6 @@ import de.nog.antlr.WRBParser.ExpressionContext;
 import de.nog.antlr.WRBParser.StatementContext;
 import de.nog.antlr.WRBParserBaseListener;
 
-
 //dummycomment
 public class WRBObserver extends WRBParserBaseListener {
 	public WRBObserver(WRBScript wrbScript) {
@@ -64,10 +63,9 @@ public class WRBObserver extends WRBParserBaseListener {
 	public void exitAddition(AdditionContext ctx) {
 		double summe = 0;
 		if (ctx.operator.get(0).getType() == WRBParser.ADD) {
-			summe = getValue(ctx.)
+			summe = getValue(ctx.multi(0)) + getValue(ctx.multi(1));
 		} else {
-			summe = Double.parseDouble(ctx.constant(0).INTEGER().getText())
-					- Double.parseDouble(ctx.constant(1).INTEGER().getText());
+			summe = getValue(ctx.multi(0)) - getValue(ctx.multi(1));
 		}
 		setValue(ctx, summe);
 	}
