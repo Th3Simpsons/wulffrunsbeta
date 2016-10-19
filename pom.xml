@@ -1,0 +1,55 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<!-- <groupId>de.nog.stefan</groupId>
+	 --><groupId>de.nog</groupId>
+	<artifactId>WulffRunsBeta</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>WulffRunsBeta</name>
+	<description>Shit</description>
+	<build>
+		<resources>
+			<resource>
+				<directory>target/generated-sources/antlr4</directory>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.antlr</groupId>
+				<artifactId>antlr4-maven-plugin</artifactId>
+				<version>4.3</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>antlr4</goal>
+						</goals>
+						<configuration>
+							<sourceDirectory>src/main/antlr</sourceDirectory>
+							<outputDirectory>target/generated-sources</outputDirectory>
+							<!-- <libDirectory>src/main/antlr4/de/nog/stefan</libDirectory> -->
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.antlr</groupId>
+			<artifactId>antlr4-runtime</artifactId>
+			<version>4.3</version>
+		</dependency>
+
+
+	</dependencies>
+</project>
