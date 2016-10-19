@@ -17,6 +17,8 @@ import de.nog.antlr.WRBParser.ExpressionContext;
 import de.nog.antlr.WRBParser.StatementContext;
 import de.nog.antlr.WRBParserBaseListener;
 
+
+//dummycomment
 public class WRBObserver extends WRBParserBaseListener {
 	public WRBObserver(WRBScript wrbScript) {
 		this.script = wrbScript;
