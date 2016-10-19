@@ -10,8 +10,30 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.m2e.core.maven2Builder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>org.eclipse.m2e.core.maven2Nature</nature>
 		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
 	</natures>
+	<variableList>
+		<variable>
+			<name>GeneratedSources</name>
+			<value>$%7BPROJECT_LOC%7D/target/generated-sources</value>
+		</variable>
+		<variable>
+			<name>GeneratedSources1</name>
+			<value>$%7BPARENT-1-PROJECT_LOC%7D/WulffRunsBeta/target/generated-sources</value>
+		</variable>
+	</variableList>
 </projectDescription>

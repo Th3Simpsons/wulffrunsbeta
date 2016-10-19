@@ -13,7 +13,8 @@ statement : expression | assign;
 expression : addition;
 addition : multi ( operator +=(ADD|SUB)) multi;
 multi : pow ( operator +=(MUL|DIV)) pow;
-pow: INTEGER;
+pow: constant POW constant;
+constant: INTEGER;
 
 
 //statement : assign | expression;

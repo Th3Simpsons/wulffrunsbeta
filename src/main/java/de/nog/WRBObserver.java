@@ -64,8 +64,7 @@ public class WRBObserver extends WRBParserBaseListener {
 	public void exitAddition(AdditionContext ctx) {
 		double summe = 0;
 		if (ctx.operator.get(0).getType() == WRBParser.ADD) {
-			summe = Double.parseDouble(ctx.constant(0).INTEGER().getText())
-					+ Double.parseDouble(ctx.constant(1).INTEGER().getText());
+			summe = getValue(ctx.)
 		} else {
 			summe = Double.parseDouble(ctx.constant(0).INTEGER().getText())
 					- Double.parseDouble(ctx.constant(1).INTEGER().getText());
