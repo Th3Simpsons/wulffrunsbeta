@@ -11,7 +11,10 @@ import org.antlr.v4.runtime.tree.*;
 import de.nog.antlr.WRBLexer;
 import de.nog.antlr.WRBParser;
 import de.nog.antlr.WRBParser.AdditionContext;
+import de.nog.antlr.WRBParser.ConstantContext;
 import de.nog.antlr.WRBParser.ExpressionContext;
+import de.nog.antlr.WRBParser.MultiContext;
+import de.nog.antlr.WRBParser.PowContext;
 //import de.nog.antlr.WRBParser.AssignContext;
 //import de.nog.antlr.WRBParser.ExpressionContext;
 import de.nog.antlr.WRBParser.StatementContext;
@@ -40,7 +43,7 @@ public class WRBObserver extends WRBParserBaseListener {
 	 */
 	@Override
 	public void enterStatement(StatementContext ctx) {
-		// System.out.println("enter statement. children:" + ctx.children);
+		System.out.println("enter statement. children:" + ctx.getText());
 
 	}
 
@@ -60,15 +63,59 @@ public class WRBObserver extends WRBParserBaseListener {
 
 	@Override
 	public void exitAddition(AdditionContext ctx) {
-		double summe = 0;
-		if (ctx.operator.get(0).getType() == WRBParser.ADD) {
-			summe = Double.parseDouble(ctx.constant(0).INTEGER().getText())
-					+ Double.parseDouble(ctx.constant(1).INTEGER().getText());
-		} else {
-			summe = Double.parseDouble(ctx.constant(0).INTEGER().getText())
-					- Double.parseDouble(ctx.constant(1).INTEGER().getText());
+		int k = 0;
+		double value = getValue(ctx.multi(k));
+		ParseTree node = ctx.multi(++k);
+		while (null != node) {
+			Token op = ctx.operator.get(k - 1);
+			if (WRBLexer.ADD == op.getType()) {
+				value += getValue(node);
+			} else {
+				value -= getValue(node);
+			}
+			node = ctx.multi(++k);
 		}
-		setValue(ctx, summe);
+		setValue(ctx, value);
+	}
+
+	@Override
+	public void exitMulti(MultiContext ctx) {
+		int k = 0;
+		double value = getValue(ctx.pow(k));
+		ParseTree node = ctx.pow(++k);
+		while (null != node) {
+			Token op = ctx.operator.get(k - 1);
+			if (WRBLexer.MUL == op.getType()) {
+				value *= getValue(node);
+			} else {
+				value /= getValue(node);
+			}
+			node = ctx.pow(++k);
+		}
+		setValue(ctx, value);
+	}
+
+	@Override
+	public void exitPow(PowContext ctx) {
+		int k = 0;
+		double value = getValue(ctx.constant(k));
+		ParseTree node = ctx.constant(++k);
+		while (null != node) {
+			value = Math.pow(value, getValue(node));
+			node = ctx.constant(++k);
+		}
+		setValue(ctx, value);
+	}
+
+	@Override
+	public void exitConstant(ConstantContext ctx) {
+
+		if (ctx.INTEGER() == null) {
+			setValue(ctx, Double.parseDouble(ctx.FLOAT().getText()));
+		} else {
+			setValue(ctx, Double.parseDouble(ctx.INTEGER().getText()));
+		}
+		System.out.println("Values is " + getValue(ctx));
 	}
 
 	private void setValue(ParseTree ctx, double value) {
@@ -77,12 +124,18 @@ public class WRBObserver extends WRBParserBaseListener {
 
 	@Override
 	public void enterEveryRule(@NotNull ParserRuleContext ctx) {
-		System.out.println("enter rule:" + ctx.getClass().toString().substring(ctx.getClass().toString().indexOf('$')));
+		System.out.println("->:" + getPrintText(ctx.getClass().toString()));
 	}
 
 	@Override
 	public void exitEveryRule(@NotNull ParserRuleContext ctx) {
-		System.out.println("exit rule:" + ctx.getClass().toString().substring(ctx.getClass().toString().indexOf('$')));
+		System.out.println("<-:" + getPrintText(ctx.getClass().toString()));
+	}
+
+	String getPrintText(String input) {
+		String out = input.substring(input.indexOf('$') + 1);
+		out = out.substring(0, out.indexOf("Context"));
+		return out;
 	}
 	/*
 	 * @Override public void exitExpression(@NotNull WRBParser.ExpressionContext
@@ -104,6 +157,7 @@ public class WRBObserver extends WRBParserBaseListener {
 		if (values.containsKey(node)) {
 			return values.get(node);
 		}
+		// return -88;
 		throw new IllegalArgumentException();
 	}
 

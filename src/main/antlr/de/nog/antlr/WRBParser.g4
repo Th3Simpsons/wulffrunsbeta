@@ -6,14 +6,15 @@ options{
 	language = Java;
 	tokenVocab = WRBLexer;	
 }
-
-
-
-statement : expression | assign;
+start: statement*;
+statement :( expression | assign) ende ;
+//addition : constant (operator +=(ADD|SUB)) constant;
 expression : addition;
-addition : constant ( operator +=(ADD|SUB)) constant;
-constant: INTEGER;
-
+addition : multi (( operator +=(ADD|SUB)) multi)*;
+multi : pow ((operator +=(MUL|DIV)) pow)*;
+pow : constant ( POW constant)*;
+constant: INTEGER|FLOAT;
+ende : TERMINATOR | EOF ;
 
 //statement : assign | expression;
 assign : ID ASSIGN expression;

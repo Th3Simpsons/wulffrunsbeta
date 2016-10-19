@@ -20,6 +20,7 @@ MUL :'*';
 DIV :'/';
 POW : '^';
 ASSIGN : '=';
+TERMINATOR : ';';
 //DOTOPERATOR : ('*'|'/');
 //DASHOPERATOR: ('-'|'+');
 VARIABLE : ([a-z]|[A-Z])+;

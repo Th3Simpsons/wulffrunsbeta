@@ -2,6 +2,7 @@ package de.nog;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -23,8 +24,8 @@ public class WRBScript implements Script {
 
 	public WRBScript() {
 		super();
-		variables = new TreeMap<String, Double>();
-		functions = new TreeMap<String, Function>();
+		variables = new HashMap<String, Double>();
+		functions = new HashMap<String, Function>();
 	}
 
 	public Function getFunction(String name) throws IllegalArgumentException {
@@ -40,7 +41,7 @@ public class WRBScript implements Script {
 	}
 
 	public void setVariable(String name, double value) {
-		variables.replace(name, value);
+		variables.put(name, value);
 
 	}
 
@@ -51,7 +52,7 @@ public class WRBScript implements Script {
 		WRBParser parsi = new WRBParser(tokens);
 		WRBObserver obs = new WRBObserver(this);
 		parsi.setBuildParseTree(true);
-		ParseTree tree = parsi.statement();
+		ParseTree tree = parsi.start();
 		ParseTreeWalker.DEFAULT.walk(obs, tree);
 
 		return obs.getLastValue();
