@@ -154,4 +154,35 @@ public class SimpleWRBScriptTest {
 		String task = " 2*(4.0 + 3)";
 		assertEquals(14, script.parse(task), eps);
 	}
+
+	// Meine Tests
+	@Test
+	public final void testBracketsNotClosed() throws Exception {
+		String task = "(7 *(2 + 3 ";
+		assertEquals(35, script.parse(task), eps);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public final void testBracketsFuckedUp() throws Exception {
+		String task = "(7 *)2 + 3 ";
+		script.parse(task);
+	}
+
+	@Test
+	public final void testNoStatement() throws Exception {
+		String task = ";";
+		assertEquals(0, script.parse(task), eps);
+	}
+
+	@Test
+	public final void testAssignVariables() throws Exception {
+		String task = "x = 4;y = 5;";
+		script.parse(task);
+		script.setVariable("x", 4);
+		script.setVariable("y", 5);
+		
+		assertEquals(4, script.getVariable("x"), eps);
+		assertEquals(5, script.getVariable("y"), eps);
+	}
+
 }

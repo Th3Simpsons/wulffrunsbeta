@@ -13,8 +13,8 @@ expression : addition;
 addition : multi (( operator +=(ADD|SUB)) multi)*;
 multi : pow ((operator +=(MUL|DIV)) pow)*;
 pow : constant ( POW constant)*;
-constant: INTEGER|FLOAT;
-ende : TERMINATOR | EOF ;
+constant: INTEGER|FLOAT|(BRACKETOPEN expression BRACKETCLOSE);
+ende : TERMINATOR ;
 
 //statement : assign | expression;
 assign : ID ASSIGN expression;

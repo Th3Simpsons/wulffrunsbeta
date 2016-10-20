@@ -11,7 +11,6 @@ ID : [a-z]+ ;
 
 //INTEGER : [+-]?DIGIT+ ; // internetz
 INTEGER : ('-')?(DIGIT)+;
-//FLOAT : [DIGIT]'.'[DIGIT]; //sossenbrink
 FLOAT : INTEGER('.')(DIGIT)+; //Staffa
 
 ADD : '+';
@@ -21,10 +20,12 @@ DIV :'/';
 POW : '^';
 ASSIGN : '=';
 TERMINATOR : ';';
+BRACKETOPEN : '(';
+BRACKETCLOSE : ')';
 //DOTOPERATOR : ('*'|'/');
 //DASHOPERATOR: ('-'|'+');
 VARIABLE : ([a-z]|[A-Z])+;
-WHITESPACE : [ \t]+ -> skip ;//whitespaces interessieren uns nicht
+WHITESPACE : [ \t]+ -> skip ;//whitespaces
 
 fragment DIGIT : [0-9];
 

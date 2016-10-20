@@ -11,6 +11,7 @@ import org.antlr.v4.runtime.tree.*;
 import de.nog.antlr.WRBLexer;
 import de.nog.antlr.WRBParser;
 import de.nog.antlr.WRBParser.AdditionContext;
+import de.nog.antlr.WRBParser.AssignContext;
 import de.nog.antlr.WRBParser.ConstantContext;
 import de.nog.antlr.WRBParser.ExpressionContext;
 import de.nog.antlr.WRBParser.MultiContext;
@@ -27,24 +28,32 @@ public class WRBObserver extends WRBParserBaseListener {
 			throw new IllegalArgumentException("script is null");
 	}
 
+	private static int printOffset = 0;
+	protected Map<String, Double> variables = new HashMap<String, Double>();
 	protected Map<ParseTree, Double> values = new HashMap<ParseTree, Double>();
 	protected WRBScript script;
 	protected double lastValue;
 
-	/*
-	 * @Override public void exitAssign(@NotNull WRBParser.AssignContext ctx) {
-	 * String id = ctx.ID().getSymbol().getText(); // double value =
-	 * getValue(ctx.expression()); // script.setVariable(id, value); // //
-	 * setValue(ctx, value); }
-	 */
-	/*
-	 * @Override public void enterExpression(ExpressionContext ctx) {
-	 * System.out.println("Enter Expression"); }
-	 */
+	String getSpaceOffset() {
+		String space = "";
+		for (int i = 0; i < printOffset; i++)
+			space += " ";
+		return space;
+	}
+
 	@Override
 	public void enterStatement(StatementContext ctx) {
-		System.out.println("enter statement. children:" + ctx.getText());
+		printOffset = 0;
+		System.out.println("enter statement. \"" + ctx.getText() + "\"");
 
+	}
+
+	@Override
+	public void exitAssign(AssignContext ctx) {
+		String varName = ctx.ID().getText();
+		Double varValue = getValue(ctx.expression());
+		System.out.println("Assigning " + varName + " = " + varValue);
+		variables.put(varName, varValue);
 	}
 
 	@Override
@@ -110,12 +119,16 @@ public class WRBObserver extends WRBParserBaseListener {
 	@Override
 	public void exitConstant(ConstantContext ctx) {
 
-		if (ctx.INTEGER() == null) {
-			setValue(ctx, Double.parseDouble(ctx.FLOAT().getText()));
-		} else {
+		if (ctx.INTEGER() != null) {
 			setValue(ctx, Double.parseDouble(ctx.INTEGER().getText()));
 		}
-		System.out.println("Values is " + getValue(ctx));
+		if (ctx.FLOAT() != null) {
+			setValue(ctx, Double.parseDouble(ctx.FLOAT().getText()));
+		}
+		if (ctx.expression() != null) {
+			setValue(ctx, getValue(ctx.expression()));
+		}
+		System.out.println(getSpaceOffset()+"Value is " + getValue(ctx));
 	}
 
 	private void setValue(ParseTree ctx, double value) {
@@ -124,12 +137,14 @@ public class WRBObserver extends WRBParserBaseListener {
 
 	@Override
 	public void enterEveryRule(@NotNull ParserRuleContext ctx) {
-		System.out.println("->:" + getPrintText(ctx.getClass().toString()));
+		System.out.println(getSpaceOffset()+"->:" + getPrintText(ctx.getClass().toString()));
+		printOffset++;
 	}
 
 	@Override
 	public void exitEveryRule(@NotNull ParserRuleContext ctx) {
-		System.out.println("<-:" + getPrintText(ctx.getClass().toString()));
+		System.out.println(getSpaceOffset()+"<-:" + getPrintText(ctx.getClass().toString()));
+		printOffset--;
 	}
 
 	String getPrintText(String input) {
