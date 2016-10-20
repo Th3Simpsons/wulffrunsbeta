@@ -173,8 +173,13 @@ public class SimpleWRBScriptTest {
 		String task = ";";
 		assertEquals(0, script.parse(task), eps);
 	}
-
 	@Test
+	public final void testPower() throws Exception {
+		String task = "2*(4";
+		assertEquals(8, script.parse(task), eps);
+	}
+
+	/*@Test
 	public final void testAssignVariables() throws Exception {
 		String task = "x = 4;y = 5;";
 		script.parse(task);
@@ -183,6 +188,6 @@ public class SimpleWRBScriptTest {
 		
 		assertEquals(4, script.getVariable("x"), eps);
 		assertEquals(5, script.getVariable("y"), eps);
-	}
+	}*/
 
 }

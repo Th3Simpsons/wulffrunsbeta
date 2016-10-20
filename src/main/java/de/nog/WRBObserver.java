@@ -173,7 +173,7 @@ public class WRBObserver extends WRBParserBaseListener {
 			return values.get(node);
 		}
 		// return -88;
-		throw new IllegalArgumentException();
+		throw new IllegalArgumentException(node.toString());
 	}
 
 	public double getLastValue() {

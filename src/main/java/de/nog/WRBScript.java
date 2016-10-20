@@ -49,10 +49,10 @@ public class WRBScript implements Script {
 		CharStream stream = new ANTLRInputStream(definition);
 		WRBLexer lexi = new WRBLexer(stream);
 		CommonTokenStream tokens = new CommonTokenStream(lexi);
-		WRBParser parsi = new WRBParser(tokens);
+		WRBParser parser = new WRBParser(tokens);
 		WRBObserver obs = new WRBObserver(this);
-		parsi.setBuildParseTree(true);
-		ParseTree tree = parsi.start();
+		parser.setBuildParseTree(true);
+		ParseTree tree = parser.start();
 		ParseTreeWalker.DEFAULT.walk(obs, tree);
 
 		return obs.getLastValue();
