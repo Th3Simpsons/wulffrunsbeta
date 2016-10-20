@@ -7,7 +7,7 @@ options{
 	tokenVocab = WRBLexer;	
 }
 start: statement*;
-statement :( expression | assign) ende ;
+statement :( expression | assign) ende? ;
 //addition : constant (operator +=(ADD|SUB)) constant;
 expression : addition;
 addition : multi (( operator +=(ADD|SUB)) multi)*;

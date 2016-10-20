@@ -24,6 +24,7 @@ package de.nog.anttest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -156,7 +157,7 @@ public class SimpleWRBScriptTest {
 	}
 
 	// Meine Tests
-	@Test
+	@Test(expected = RecognitionException.class)
 	public final void testBracketsNotClosed() throws Exception {
 		String task = "(7 *(2 + 3 ";
 		assertEquals(35, script.parse(task), eps);
@@ -168,26 +169,31 @@ public class SimpleWRBScriptTest {
 		script.parse(task);
 	}
 
-	@Test
+	@Test(expected = RecognitionException.class)
 	public final void testNoStatement() throws Exception {
 		String task = ";";
 		assertEquals(0, script.parse(task), eps);
 	}
+
 	@Test
 	public final void testPower() throws Exception {
-		String task = "2*(4";
-		assertEquals(8, script.parse(task), eps);
+		String task = "2^(4)";
+		assertEquals(16, script.parse(task), eps);
 	}
 
-	/*@Test
-	public final void testAssignVariables() throws Exception {
-		String task = "x = 4;y = 5;";
-		script.parse(task);
-		script.setVariable("x", 4);
-		script.setVariable("y", 5);
-		
-		assertEquals(4, script.getVariable("x"), eps);
-		assertEquals(5, script.getVariable("y"), eps);
-	}*/
+	@Test(expected = RecognitionException.class)
+	public final void testPowerFuckedBracket() throws Exception {
+		String task = "2^(4";
+		assertEquals(16, script.parse(task), eps);
+	}
+
+	/*
+	 * @Test public final void testAssignVariables() throws Exception { String
+	 * task = "x = 4;y = 5;"; script.parse(task); script.setVariable("x", 4);
+	 * script.setVariable("y", 5);
+	 * 
+	 * assertEquals(4, script.getVariable("x"), eps); assertEquals(5,
+	 * script.getVariable("y"), eps); }
+	 */
 
 }

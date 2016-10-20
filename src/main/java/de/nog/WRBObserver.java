@@ -1,10 +1,17 @@
 package de.nog;
 
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.antlr.v4.runtime.ANTLRErrorListener;
+import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.atn.ATNConfigSet;
+import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.*;
 
@@ -21,7 +28,7 @@ import de.nog.antlr.WRBParser.PowContext;
 import de.nog.antlr.WRBParser.StatementContext;
 import de.nog.antlr.WRBParserBaseListener;
 
-public class WRBObserver extends WRBParserBaseListener {
+public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorListener {
 	public WRBObserver(WRBScript wrbScript) {
 		this.script = wrbScript;
 		if (null == script)
@@ -33,12 +40,44 @@ public class WRBObserver extends WRBParserBaseListener {
 	protected Map<ParseTree, Double> values = new HashMap<ParseTree, Double>();
 	protected WRBScript script;
 	protected double lastValue;
+	protected RecognitionException shitIDealtWith = null;
 
 	String getSpaceOffset() {
 		String space = "";
 		for (int i = 0; i < printOffset; i++)
 			space += " ";
 		return space;
+	}
+
+	public RecognitionException getShitThatHappenedWhileParsing() {
+		return shitIDealtWith;
+	}
+
+	@Override
+	public void syntaxError(Recognizer<?, ?> arg0, Object arg1, int arg2, int arg3, String arg4,
+			RecognitionException arg5) {
+		// throw new Exception("Fucking syntaxfehler in deiner
+		// scheissanweisung");
+		shitIDealtWith = new RecognitionException(arg0, arg0.getInputStream(), null);
+	}
+
+	@Override
+	public void reportContextSensitivity(Parser arg0, DFA arg1, int arg2, int arg3, int arg4, ATNConfigSet arg5) {
+		System.err.println("context sensivity shit right here ");
+		shitIDealtWith = new RecognitionException(arg0, arg0.getInputStream(), null);
+	}
+
+	@Override
+	public void reportAttemptingFullContext(Parser arg0, DFA arg1, int arg2, int arg3, BitSet arg4, ATNConfigSet arg5) {
+		System.err.println("attempt full context shit right here ");
+		shitIDealtWith = new RecognitionException(arg0, arg0.getInputStream(), null);
+	}
+
+	@Override
+	public void reportAmbiguity(Parser arg0, DFA arg1, int arg2, int arg3, boolean arg4, BitSet arg5,
+			ATNConfigSet arg6) {
+		System.err.println("ambigious shit right here ");
+		shitIDealtWith = new RecognitionException(arg0, arg0.getInputStream(), null);
 	}
 
 	@Override
@@ -128,7 +167,7 @@ public class WRBObserver extends WRBParserBaseListener {
 		if (ctx.expression() != null) {
 			setValue(ctx, getValue(ctx.expression()));
 		}
-		System.out.println(getSpaceOffset()+"Value is " + getValue(ctx));
+		System.out.println(getSpaceOffset() + "Value is " + getValue(ctx));
 	}
 
 	private void setValue(ParseTree ctx, double value) {
@@ -137,13 +176,13 @@ public class WRBObserver extends WRBParserBaseListener {
 
 	@Override
 	public void enterEveryRule(@NotNull ParserRuleContext ctx) {
-		System.out.println(getSpaceOffset()+"->:" + getPrintText(ctx.getClass().toString()));
+		System.out.println(getSpaceOffset() + "->:" + getPrintText(ctx.getClass().toString()));
 		printOffset++;
 	}
 
 	@Override
 	public void exitEveryRule(@NotNull ParserRuleContext ctx) {
-		System.out.println(getSpaceOffset()+"<-:" + getPrintText(ctx.getClass().toString()));
+		System.out.println(getSpaceOffset() + "<-:" + getPrintText(ctx.getClass().toString()));
 		printOffset--;
 	}
 
