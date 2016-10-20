@@ -157,7 +157,7 @@ public class SimpleWRBScriptTest {
 	}
 
 	// Meine Tests
-	@Test(expected = RecognitionException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public final void testBracketsNotClosed() throws Exception {
 		String task = "(7 *(2 + 3 ";
 		assertEquals(35, script.parse(task), eps);
@@ -169,7 +169,7 @@ public class SimpleWRBScriptTest {
 		script.parse(task);
 	}
 
-	@Test(expected = RecognitionException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public final void testNoStatement() throws Exception {
 		String task = ";";
 		assertEquals(0, script.parse(task), eps);
@@ -181,7 +181,7 @@ public class SimpleWRBScriptTest {
 		assertEquals(16, script.parse(task), eps);
 	}
 
-	@Test(expected = RecognitionException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public final void testPowerFuckedBracket() throws Exception {
 		String task = "2^(4";
 		assertEquals(16, script.parse(task), eps);

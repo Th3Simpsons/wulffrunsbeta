@@ -53,7 +53,7 @@ public class WRBScript implements Script {
 
 	}
 
-	public double parse(String definition) throws RecognitionException, IllegalArgumentException {
+	public double parse(String definition) throws IllegalArgumentException {
 		CharStream stream = new ANTLRInputStream(definition);
 		WRBLexer lexi = new WRBLexer(stream);
 		CommonTokenStream tokens = new CommonTokenStream(lexi);
@@ -67,7 +67,8 @@ public class WRBScript implements Script {
 
 		ParseTreeWalker.DEFAULT.walk(observer, tree);
 		if (observer.getShitThatHappenedWhileParsing() != null) {
-			throw observer.getShitThatHappenedWhileParsing();
+
+			throw new IllegalArgumentException(observer.getShitThatHappenedWhileParsing());
 		}
 		return observer.getLastValue();
 
