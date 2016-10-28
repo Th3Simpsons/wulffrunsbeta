@@ -1,8 +1,13 @@
 package de.nog;
 
+import java.awt.List;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.Parser;
@@ -37,7 +42,8 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 
 	private static int printOffset = 0;
 	protected Map<String, Double> variables = new HashMap<String, Double>();
-	protected Map<ParseTree, Double> values = new HashMap<ParseTree, Double>();
+	protected Map<String, Function> functions = new HashMap<String, Function>();
+	protected Map<ParseTree, Double> treeValues = new IdentityHashMap<ParseTree, Double>();
 	protected WRBScript script;
 	protected double lastValue;
 	protected RecognitionException shitIDealtWith = null;
@@ -56,8 +62,6 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 	@Override
 	public void syntaxError(Recognizer<?, ?> arg0, Object arg1, int arg2, int arg3, String arg4,
 			RecognitionException arg5) {
-		// throw new Exception("Fucking syntaxfehler in deiner
-		// scheissanweisung");
 		shitIDealtWith = new RecognitionException(arg0, arg0.getInputStream(), null);
 	}
 
@@ -93,13 +97,29 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 		Double varValue = getValue(ctx.expression());
 		System.out.println("Assigning " + varName + " = " + varValue);
 		variables.put(varName, varValue);
+		treeValues.put(ctx, varValue);
+		debugPrintVariables();
+	}
+
+	public void debugPrintVariables() {
+		for (Entry<String, Double> e : variables.entrySet()) {
+			System.out.println("Entry \"" + e.getKey() + "\" = " + e.getValue()
+					+ (e.getKey().equals("x") ? " (equals x)" : " (not x)"));
+
+		}
 	}
 
 	@Override
 	public void exitStatement(StatementContext ctx) {
 		// System.out.println("exit statement. children: " + ctx.children);
 
-		lastValue = getValue(ctx.expression());
+		if (ctx.expression() != null) {
+			lastValue = getValue(ctx.expression());
+		}
+		if (ctx.assign() != null) {
+			lastValue = getValue(ctx.assign());
+		}
+
 		setValue(ctx, lastValue);
 		System.out.println("Statement returns " + lastValue);
 	}
@@ -167,11 +187,58 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 		if (ctx.expression() != null) {
 			setValue(ctx, getValue(ctx.expression()));
 		}
+		if (ctx.function() != null) {
+			setValue(ctx, getValue(ctx.function()));
+		}
+
 		System.out.println(getSpaceOffset() + "Value is " + getValue(ctx));
 	}
 
+	@Override
+	public void exitFunction(WRBParser.FunctionContext ctx) {
+		System.out.println("function evaluation...");
+		Function f = functions.get(ctx.ID().getText());
+		if (f == null)
+			return;
+		ArrayList<Double> args = new ArrayList<Double>();
+
+		for (ExpressionContext exCtx : ctx.expression()) {
+			double arg = getValue(exCtx);
+			args.add(arg);
+		}
+		double[] xn = new double[args.size()];
+		int i = 0;
+		for (double a : args) {
+			xn[i++] = a;
+		}
+
+		setValue(ctx, f.eval(xn));
+
+	}
+
+	@Override
+	public void exitFunctiondefinition(WRBParser.FunctiondefinitionContext ctx) {
+
+		System.out.println(
+				"Found functiondef: " + ctx.ID().get(0).getText().toString() + " = " + ctx.expression().getText());
+		functions.put(ctx.ID().get(0).getText().toString(), new ExprFunction(ctx.expression().getText(), this) {
+
+			@Override
+			public double eval(double... args) {
+				int i = 1;
+				for (double d : args) {
+					System.out.println("Added x" + i + " = " + d + " to localvarset");
+					wrbObserver.variables.put("x" + i++, d);
+				}
+				System.out.println("Started parsing expression");
+				script.parse(expression);
+				return 0;
+			}
+		});
+	}
+
 	private void setValue(ParseTree ctx, double value) {
-		values.put(ctx, value);
+		treeValues.put(ctx, value);
 	}
 
 	@Override
@@ -191,27 +258,11 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 		out = out.substring(0, out.indexOf("Context"));
 		return out;
 	}
-	/*
-	 * @Override public void exitExpression(@NotNull WRBParser.ExpressionContext
-	 * ctx) { int k = 0; double value = getValue(ctx.term(k)); ParseTree node =
-	 * ctx.term(++k); while (null != node) { Token op = ctx.operator.get(k - 1);
-	 * if (WRBLexer.ADD == op.getType()) { value += getValue(node); } else {
-	 * value -= getValue(node); } } setValue(ctx, value); }
-	 */
-	/*
-	 * @Override public void exitDotop(@NotNull WRBParser.DotopContext ctx){
-	 * 
-	 * }
-	 * 
-	 * private void setValue(ExpressionContext ctx, double value) {
-	 * values.replace(ctx, value); }
-	 */
 
 	private double getValue(ParseTree node) {
-		if (values.containsKey(node)) {
-			return values.get(node);
+		if (treeValues.containsKey(node)) {
+			return treeValues.get(node);
 		}
-		// return -88;
 		throw new IllegalArgumentException(node.toString());
 	}
 

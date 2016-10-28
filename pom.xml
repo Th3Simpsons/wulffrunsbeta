@@ -8,14 +8,6 @@
 	<name>WulffRunsBeta</name>
 	<description>Shit</description>
 	<build>
-		<resources>
-			<resource>
-				<directory>target/generated-sources/antlr4</directory>
-			</resource>
-			<resource>
-				<directory>src/main/java</directory>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.antlr</groupId>
@@ -35,6 +27,14 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>target/generated-sources/antlr4</directory>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+			</resource>
+		</resources>
 	</build>
 
 	<dependencies>

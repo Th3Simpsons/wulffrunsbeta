@@ -6,7 +6,7 @@ options{
 	language = Java;
 
 }
-ID : [a-z]+ ;  
+ID : [a-z]+DIGIT* ;  
 
 
 //INTEGER : [+-]?DIGIT+ ; // internetz
@@ -22,6 +22,7 @@ ASSIGN : '=';
 TERMINATOR : ';';
 BRACKETOPEN : '(';
 BRACKETCLOSE : ')';
+COMMA : ',';
 //DOTOPERATOR : ('*'|'/');
 //DASHOPERATOR: ('-'|'+');
 VARIABLE : ([a-z]|[A-Z])+;

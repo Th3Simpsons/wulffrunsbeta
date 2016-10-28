@@ -7,24 +7,21 @@ options{
 	tokenVocab = WRBLexer;	
 }
 start: statement*;
-statement :( expression | assign) ende? ;
-//addition : constant (operator +=(ADD|SUB)) constant;
+
+//##############
+statement :( expression | assign | functiondefinition) ende? ;
 expression : addition;
+
+//##############
 addition : multi (( operator +=(ADD|SUB)) multi)*;
 multi : pow ((operator +=(MUL|DIV)) pow)*;
 pow : constant ( POW constant)*;
-constant: INTEGER|FLOAT|(BRACKETOPEN expression BRACKETCLOSE);
+constant: INTEGER|FLOAT|(BRACKETOPEN expression BRACKETCLOSE)|function;
 ende : TERMINATOR ;
 
-//statement : assign | expression;
+//##############
+functiondefinition : ID BRACKETOPEN ID (COMMA ID)* BRACKETCLOSE ASSIGN expression;
+function : ID BRACKETOPEN expression (COMMA expression)* BRACKETCLOSE;
+//##############
 assign : ID ASSIGN expression;
 
-//constant : INTEGER|FLOAT;
-//atom : constant|VARIABLE;
-//expression:  term ( operator +=(ADD|SUB) term )*;
-//term : constant;
-
-
-//term: dotop (operator +=(ADD|SUB) dotop )* ;
-//dotop: power (operator +=(MUL|DIV) power)*;
-//power: atom (POW atom)*;

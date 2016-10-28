@@ -40,14 +40,14 @@ import de.nog.anttest.*;
  */
 public class SimpleWRBScriptTest {
 	final double eps = 1.E-8;
-	Script script;
+	WRBScript script;
 
 	/**
 	 * @throws java.lang.Exception
 	 */
 	@Before
 	public final void setUp() throws Exception {
-		script = getScript();
+		script = new WRBScript();
 		assertNotNull("no script implementation", script);
 	}
 
@@ -56,7 +56,7 @@ public class SimpleWRBScriptTest {
 	 * 
 	 * @return script implementation
 	 */
-	protected Script getScript() {
+	protected WRBScript getScript() {
 		return new WRBScript();
 	}
 
@@ -185,6 +185,29 @@ public class SimpleWRBScriptTest {
 	public final void testPowerFuckedBracket() throws Exception {
 		String task = "2^(4";
 		assertEquals(16, script.parse(task), eps);
+	}
+
+	@Test
+	public final void testSetGetVariable2() throws Exception {
+		script.setVariable("x", 3);
+		assertEquals(3, script.getVariable("x"), eps);
+	}
+	
+	@Test
+	public final void testSetVariable() throws Exception {
+		String task = "x=3";
+		
+		assertEquals(3, script.parse(task), eps);
+		script.observer.debugPrintVariables();
+		assertEquals(3, script.getVariable("x"), eps);
+	}
+	
+	@Test
+	public final void testFunction() throws Exception {
+		String task = "f(x)=42*x1";
+		script.parse(task);
+		assertNotNull(script.getFunction("f"));
+	
 	}
 
 	/*
