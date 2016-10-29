@@ -6,17 +6,17 @@ options{
 	language = Java;
 	tokenVocab = WRBLexer;	
 }
-start: statement*;
+start: statement? (ende statement)* ende?;
 
 //##############
-statement :( expression | assign | functiondefinition) ende? ;
+statement :( expression | assign | functiondefinition)  ;
 expression : addition;
 
 //##############
 addition : multi (( operator +=(ADD|SUB)) multi)*;
 multi : pow ((operator +=(MUL|DIV)) pow)*;
 pow : constant ( POW constant)*;
-constant: INTEGER|FLOAT|(BRACKETOPEN expression BRACKETCLOSE)|ID|function;
+constant: INTEGER|FLOAT|(BRACKETOPEN expression BRACKETCLOSE)|function|ID;
 ende : TERMINATOR ;
 
 //##############

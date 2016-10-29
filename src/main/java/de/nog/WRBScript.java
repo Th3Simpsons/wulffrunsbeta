@@ -27,6 +27,24 @@ public class WRBScript implements Script {
 	public WRBScript() {
 		super();
 		observer = new WRBObserver(this);
+		
+		addStandardfunctions();
+		
+	}
+	private void addStandardfunctions(){
+		observer.functions.put("sin", new Function() {			
+			@Override
+			public double eval(double... args) {
+				return Math.sin(args[0]);
+			}
+		});
+		
+		observer.functions.put("cos", new Function() {			
+			@Override
+			public double eval(double... args) {
+				return Math.cos(args[0]);
+			}
+		});
 	}
 
 	public Function getFunction(String name) throws IllegalArgumentException {

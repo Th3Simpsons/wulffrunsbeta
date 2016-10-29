@@ -190,8 +190,7 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 		}
 		//Function
 		if (ctx.function() != null) {
-			System.err.println("Not yet implemented");
-			setValue(ctx, 0 );
+			setValue(ctx, getValue(ctx.function()) );
 		}
 		//Variable
 		if (ctx.ID() != null) {
@@ -221,7 +220,7 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 		for (double a : args) {
 			xn[i++] = a;
 		}
-
+System.out.println("Setting node val of " + ctx.ID());
 		setValue(ctx, f.eval(xn));
 
 	}

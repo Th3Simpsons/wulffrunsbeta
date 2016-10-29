@@ -169,10 +169,11 @@ public class SimpleWRBScriptTest {
 		script.parse(task);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public final void testNoStatement() throws Exception {
 		String task = ";";
-		assertEquals(0, script.parse(task), eps);
+		//should just not break down
+		script.parse(task);
 	}
 
 	@Test
@@ -214,12 +215,45 @@ public class SimpleWRBScriptTest {
 	
 	@Test
 	public final void testFunction() throws Exception {
-		String task = "f(x)=42*x1";
+		String task = "f(x)=42*x1;n=f(2);";
 		script.parse(task);
 		assertNotNull(script.getFunction("f"));
+		assertEquals(84 ,script.getVariable("n"), eps );
 	
 	}
-
+	@Test
+	public final void testFunction2() throws Exception {
+		String task = "f(x)=11*x1;f(3);";
+		double d = script.parse(task);
+		assertNotNull(script.getFunction("f"));
+		assertEquals(33 ,d, eps );	
+	}
+	
+	@Test
+	public final void testFunction2Variables() throws Exception {
+		String task = "f2(x,y)=x2*x1;f2(3,4);";
+		double d = script.parse(task);
+		assertNotNull(script.getFunction("f2"));
+		assertEquals(12 ,d, eps );	
+	}
+	
+	@Test
+	public final void testFunction5Variables() throws Exception {
+		String task = "heftig(x,xx,xxx,xxxx,xxxxx)=x1*x2*x3*x4*x5;heftig(1,2,3,4,5);";
+		double d = script.parse(task);
+		assertNotNull(script.getFunction("heftig"));
+		assertEquals(120 ,d, eps );	
+	}
+	
+	@Test
+	public final void testFunctionSinus() throws Exception {
+		String task = "cos(3.1415);";
+		double d = script.parse(task);
+		assertNotNull(script.getFunction("cos"));
+		assertEquals(-1 ,d, eps );	
+	}
+	
+	
 	/*
 	 * @Test public final void testAssignVariables() throws Exception { String
 	 * task = "x = 4;y = 5;"; script.parse(task); script.setVariable("x", 4);
