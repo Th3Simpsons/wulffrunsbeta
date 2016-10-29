@@ -184,11 +184,21 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 		if (ctx.FLOAT() != null) {
 			setValue(ctx, Double.parseDouble(ctx.FLOAT().getText()));
 		}
+		//
 		if (ctx.expression() != null) {
 			setValue(ctx, getValue(ctx.expression()));
 		}
+		//Function
 		if (ctx.function() != null) {
-			setValue(ctx, getValue(ctx.function()));
+			System.err.println("Not yet implemented");
+			setValue(ctx, 0 );
+		}
+		//Variable
+		if (ctx.ID() != null) {
+			if (variables.get(ctx.ID().getText()) != null)
+				setValue(ctx, variables.get(ctx.ID().getText()));
+			else
+				setValue(ctx, 0);
 		}
 
 		System.out.println(getSpaceOffset() + "Value is " + getValue(ctx));
@@ -231,8 +241,8 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 					wrbObserver.variables.put("x" + i++, d);
 				}
 				System.out.println("Started parsing expression");
-				script.parse(expression);
-				return 0;
+				double ret = script.parse(expression);
+				return ret;
 			}
 		});
 	}

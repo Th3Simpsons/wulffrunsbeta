@@ -202,6 +202,16 @@ public class SimpleWRBScriptTest {
 		assertEquals(3, script.getVariable("x"), eps);
 	}
 	
+	
+	@Test
+	public final void testVariableSetAndAdd() throws Exception {
+		String task = "x=1;y=2;z=x+y;";
+		script.parse(task);
+		assertEquals(3,script.parse(task),eps);
+	
+	}
+	
+	
 	@Test
 	public final void testFunction() throws Exception {
 		String task = "f(x)=42*x1";

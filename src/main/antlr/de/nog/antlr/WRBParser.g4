@@ -16,7 +16,7 @@ expression : addition;
 addition : multi (( operator +=(ADD|SUB)) multi)*;
 multi : pow ((operator +=(MUL|DIV)) pow)*;
 pow : constant ( POW constant)*;
-constant: INTEGER|FLOAT|(BRACKETOPEN expression BRACKETCLOSE)|function;
+constant: INTEGER|FLOAT|(BRACKETOPEN expression BRACKETCLOSE)|ID|function;
 ende : TERMINATOR ;
 
 //##############
