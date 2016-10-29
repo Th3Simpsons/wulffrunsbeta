@@ -4,28 +4,11 @@ Shit runs fine*
 
 *bugs are easter eggs
 
-### What is this repository for? ###
-
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
 
 ### How do I get set up? ###
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+* Git clone will do. You should a JRE.
 
-### Contribution guidelines ###
+### Not yet finished ###
 
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+* Functions. Deadline 3.11.16
