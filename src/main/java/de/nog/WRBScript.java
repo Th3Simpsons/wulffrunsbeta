@@ -45,6 +45,28 @@ public class WRBScript implements Script {
 				return Math.cos(args[0]);
 			}
 		});
+		
+		
+		observer.functions.put("tan", new Function() {			
+			@Override
+			public double eval(double... args) {
+				return Math.tan(args[0]);
+			}
+		});
+		
+		observer.functions.put("asin", new Function() {			
+			@Override
+			public double eval(double... args) {
+				return Math.asin(args[0]);
+			}
+		});
+		observer.functions.put("acos", new Function() {			
+			@Override
+			public double eval(double... args) {
+				return Math.acos(args[0]);
+			}
+		});
+		
 	}
 
 	public Function getFunction(String name) throws IllegalArgumentException {
