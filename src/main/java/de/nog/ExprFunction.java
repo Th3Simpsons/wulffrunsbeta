@@ -40,22 +40,40 @@ public class ExprFunction implements Function {
 			throw new IllegalArgumentException("Functionparameters are not matching number of definition");
 		}
 		int i = 0;
-		//Deque<Map.Entry<String, Double>> stack = new ArrayDeque<Map.Entry<String, Double>>();
+		Deque<VarAssingment> stack = new ArrayDeque<VarAssingment>();
+		VarAssingment temp = null;
 		for (String arg : argList) {
-			// save Vars before
-			//Map.Entry<String, Double> vAssign;
-			//stack.push(e);
+			// save Vars before overwriting them
+			if (wrbObserver.variables.get(arg) != null) {
+				//debug("saving var" + arg);
+				temp = new VarAssingment();
+				temp.name = arg;
+				temp.value = wrbObserver.variables.get(arg);
 
-			// ---------
+				stack.push(temp);
+			}
 
 			wrbObserver.variables.put(arg, args[i]);
-			debug("Added " + arg + " = " + args[i] + " to local function context");
+			//debug("Added " + arg + " = " + args[i] + " to local function context");
 			i++;
 		}
-		debug("walking through the tree of " + expCtx.getText());
+		//debug("walking through the tree of " + expCtx.getText());
 		ParseTreeWalker.DEFAULT.walk(wrbObserver, expCtx);
 
+		temp = null;
+		while ( !stack.isEmpty()) {
+			temp = stack.pop();
+			wrbObserver.variables.put(temp.name, temp.value);
+		
+		}
+
 		return wrbObserver.lastValue;
+	}
+
+	class VarAssingment {
+		public String name;
+		public double value;
+
 	}
 
 	void debug(String msg) {

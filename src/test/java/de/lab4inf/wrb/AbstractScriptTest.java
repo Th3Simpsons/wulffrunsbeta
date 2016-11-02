@@ -359,7 +359,7 @@ public abstract class AbstractScriptTest {
     }
 
     @Test
-    @Ignore
+
     public void testParsePow3() throws Exception {
         String task = " 2 ** (1+3)";
         assertEquals(16, script.parse(task), eps);
@@ -372,7 +372,7 @@ public abstract class AbstractScriptTest {
     }
 
     @Test
-    @Ignore
+
     public void testParsePow5() throws Exception {
         String task = " (3*6)**(3 - 5)";
         assertEquals(Math.pow(18, -2), script.parse(task), eps);
@@ -1127,7 +1127,7 @@ public abstract class AbstractScriptTest {
      * @throws Exception
      */
     @Test
-    @Ignore
+ 
     public void testTimingCachedFunctions() throws Exception {
         final int MAX_LOOPS = 5000;
         final String fmt = "\n\n" + "  Parser Timing Test    \n" + "=====================    \n"

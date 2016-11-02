@@ -48,7 +48,7 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 	protected WRBScript script;
 	protected double lastValue;
 	protected IllegalArgumentException shitIDealtWith = null;
-	private boolean debug = true;
+	private boolean debug = false;
 
 	String getSpaceOffset() {
 		String space = "";
@@ -89,7 +89,7 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 	@Override
 	public void enterStatement(StatementContext ctx) {
 		printOffset = 0;
-		debug("enter statement. \"" + ctx.getText() + "\"");
+		// debug("enter statement. \"" + ctx.getText() + "\"");
 
 	}
 
@@ -97,7 +97,7 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 	public void exitAssign(AssignContext ctx) {
 		String varName = ctx.ID().getText();
 		Double varValue = getValue(ctx.expression());
-		debug("Assigning " + varName + " = " + varValue);
+		// debug("Assigning " + varName + " = " + varValue);
 		variables.put(varName, varValue);
 		treeValues.put(ctx, varValue);
 		debugPrintVariables();
@@ -105,8 +105,8 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 
 	public void debugPrintVariables() {
 		for (Entry<String, Double> e : variables.entrySet()) {
-			debug("Entry \"" + e.getKey() + "\" = " + e.getValue()
-					+ (e.getKey().equals("x") ? " (equals x)" : " (not x)"));
+			// debug("Entry \"" + e.getKey() + "\" = " + e.getValue() +
+			// (e.getKey().equals("x") ? " (equals x)" : " (not x)"));
 
 		}
 	}
@@ -123,14 +123,14 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 		}
 
 		setValue(ctx, lastValue);
-		debug("Statement returns " + lastValue);
+		// debug("Statement returns " + lastValue);
 	}
 
 	@Override
 	public void exitExpression(ExpressionContext ctx) {
 		setValue(ctx, getValue(ctx.addition()));
 		lastValue = getValue(ctx.addition());
-		debug("last value is" + lastValue);
+		// debug("last value is" + lastValue);
 	}
 
 	void debug(String msg) {
@@ -188,16 +188,17 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 	public void exitConstant(ConstantContext ctx) {
 		int factor = 1;
 		if (ctx.sign != null) {
-			if (!ctx.sign.isEmpty()){
+			if (!ctx.sign.isEmpty()) {
 				if (ctx.sign.get(0).getText().equals("-")) {
-					debug("the following is negative");
+					// debug("the following is negative");
 					factor = -1;
-				}else{
-					debug("the term " + ctx.getText() + " is positive");
+				} else {
+					// debug("the term " + ctx.getText() + " is positive");
 				}
-			}else{debug("the term " + ctx.getText() + " has no sign");}
-					
-		
+			} else {// debug("the term " + ctx.getText() + " has no sign");
+
+			}
+
 		}
 
 		if (ctx.INTEGER() != null) {
@@ -223,12 +224,12 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 				setValue(ctx, factor * 0);
 		}
 
-		debug(getSpaceOffset() + "Value is " + factor * getValue(ctx));
+		// debug(getSpaceOffset() + "Value is " + factor * getValue(ctx));
 	}
 
 	@Override
 	public void exitFunction(WRBParser.FunctionContext ctx) {
-		debug("function evaluation...");
+		// debug("function evaluation...");
 		Function f = functions.get(ctx.ID().getText());
 		if (f == null)
 			return;
@@ -243,7 +244,7 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 		for (double a : args) {
 			xn[i++] = a;
 		}
-		debug("Setting node val of " + ctx.ID());
+		// debug("Setting node val of " + ctx.ID());
 		setValue(ctx, f.eval(xn));
 
 	}
@@ -260,7 +261,8 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 					argList.add(id.getText());
 			}
 			Function f = new ExprFunction(ctx.expression(), argList, this);
-			debug("Added " + ctx.ID(0).getText() + " to functions. expr = " + ctx.expression().getText());
+			// debug("Added " + ctx.ID(0).getText() + " to functions. expr = " +
+			// ctx.expression().getText());
 			functions.put(ctx.ID(0).getText(), f);
 		}
 		ctx.removeLastChild();
@@ -294,13 +296,17 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 
 	@Override
 	public void enterEveryRule(@NotNull ParserRuleContext ctx) {
-		debug(getSpaceOffset() + "->:" + getPrintText(ctx.getClass().toString()) + "   \"" + ctx.getText() + "\"");
+		// debug(getSpaceOffset() + "->:" +
+		// getPrintText(ctx.getClass().toString()) + " \"" + ctx.getText() +
+		// "\"");
 		printOffset++;
 	}
 
 	@Override
 	public void exitEveryRule(@NotNull ParserRuleContext ctx) {
-		debug(getSpaceOffset() + "<-:" + getPrintText(ctx.getClass().toString()) + "   \"" + ctx.getText() + "\"");
+		// debug(getSpaceOffset() + "<-:" +
+		// getPrintText(ctx.getClass().toString()) + " \"" + ctx.getText() +
+		// "\"");
 		printOffset--;
 	}
 
