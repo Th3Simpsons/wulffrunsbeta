@@ -19,7 +19,6 @@ import org.antlr.v4.runtime.tree.*;
 
 import de.nog.antlr.WRBLexer;
 import de.nog.antlr.WRBParser;
-import de.nog.antlr.WRBParser.AdditionContext;
 import de.nog.antlr.WRBParser.AssignContext;
 import de.nog.antlr.WRBParser.ConstantContext;
 import de.nog.antlr.WRBParser.ExpressionContext;
@@ -113,18 +112,6 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 
 	@Override
 	public void exitExpression(ExpressionContext ctx) {
-		setValue(ctx, getValue(ctx.addition()));
-		lastValue = getValue(ctx.addition());
-		// debug("last value is" + lastValue);
-	}
-
-	void debug(String msg) {
-		if (debug)
-			System.out.println(msg);
-	}
-
-	@Override
-	public void exitAddition(AdditionContext ctx) {
 		int k = 0;
 		double value = getValue(ctx.multi(k));
 		ParseTree node = ctx.multi(++k);
@@ -137,8 +124,17 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 			}
 			node = ctx.multi(++k);
 		}
-		setValue(ctx, value);
+		setValue(ctx, value);		
+		
+	
+		lastValue = value;
+		// debug("last value is" + lastValue);
 	}
+
+	void debug(String msg) {
+		if (debug)
+			System.out.println(msg);
+	}	
 
 	@Override
 	public void exitMulti(MultiContext ctx) {
@@ -247,13 +243,11 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 			ArrayList<String> argList = new ArrayList<String>();
 
 			for (TerminalNode id : ctx.ID()) {
-				// OHNE ID 0, weil es die funktions bezeichnung ist!!!!
+				// OHNE ID 0, weil es die funktions bezeichnung ist
 				if (id != ctx.ID(0))
 					argList.add(id.getText());
 			}
 			Function f = new ExprFunction(ctx.expression(), argList, this);
-			// debug("Added " + ctx.ID(0).getText() + " to functions. expr = " +
-			// ctx.expression().getText());
 			functions.put(ctx.ID(0).getText(), f);
 		}
 		ctx.removeLastChild();

@@ -20,7 +20,7 @@ public class ExprFunction implements Function {
 	 * public ExprFunction(String string, WRBObserver wrbObserver) {
 	 * this.expression = string; this.wrbObserver = wrbObserver; }
 	 */
-
+static	Deque<VarAssingment> stack = new ArrayDeque<VarAssingment>();
 	public ExprFunction(ExpressionContext expCtx, List<String> argList, WRBObserver wrbObserver) {
 		this.expCtx = expCtx;
 		this.wrbObserver = wrbObserver;
@@ -33,7 +33,7 @@ public class ExprFunction implements Function {
 			throw new IllegalArgumentException("Functionparameters are not matching number of definition");
 		}
 		int i = 0;
-		Deque<VarAssingment> stack = new ArrayDeque<VarAssingment>();
+		
 		VarAssingment temp = null;
 		for (String arg : argList) {
 			// save Vars before overwriting them
