@@ -1,14 +1,11 @@
 package de.nog;
 
-import java.io.BufferedInputStream;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.BitSet;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+
 
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -31,10 +28,61 @@ public class WRBScript implements Script {
 		super();
 		observer = new WRBObserver(this);
 
+	
 		addStandardfunctions();
 
 	}
 
+
+	public Function getFunction(String name) throws IllegalArgumentException {
+		Function f = observer.functions.get(name);
+		if (f != null)
+			return f;
+		throw new IllegalArgumentException("Function " + name + " not found");
+	}
+
+	public double getVariable(String name) throws IllegalArgumentException {
+		Double ret = observer.variables.get(name);
+		if (ret != null)
+			return observer.variables.get(name);
+		throw new IllegalArgumentException("Variable " + name + " not found");
+	}
+
+	public void setVariable(String name, double value) {
+		observer.variables.put(name, value);
+
+	}
+
+	public double parse(String definition) throws IllegalArgumentException {
+		CharStream stream = new ANTLRInputStream(definition);
+		WRBLexer lexi = new WRBLexer(stream);
+		CommonTokenStream tokens = new CommonTokenStream(lexi);
+		WRBParser parser = new WRBParser(tokens);
+		// WRBObserver observer = new WRBObserver(this);
+		parser.setBuildParseTree(true);
+		ANTLRErrorListener listener = observer;
+		parser.addErrorListener(listener);
+
+		ParseTree tree = parser.start();
+
+		ParseTreeWalker.DEFAULT.walk(observer, tree);
+		if (observer.getShitThatHappenedWhileParsing() != null) {			throw new IllegalArgumentException(observer.getShitThatHappenedWhileParsing());		}
+		return observer.getLastValue();
+
+	}
+
+	public double parse(InputStream defStream) throws IllegalArgumentException, IOException {
+
+		InputStreamReader r = new InputStreamReader(defStream);
+		BufferedReader br = new BufferedReader(r);
+		String command = "";
+		String line = null;
+		while ((line = br.readLine()) != null) {
+			command += line;
+		}
+
+		return parse(command);
+	}
 	private void addStandardfunctions() {
 		observer.functions.put("sin", new Function() {
 			@Override
@@ -99,7 +147,6 @@ public class WRBScript implements Script {
 						max = d;
 					}
 				}
-
 				return max;
 			}
 		});
@@ -187,59 +234,6 @@ public class WRBScript implements Script {
 				return Math.sqrt(args[0]);
 			}
 		});
-	}
-
-	public Function getFunction(String name) throws IllegalArgumentException {
-		Function f = observer.functions.get(name);
-		if (f != null)
-			return f;
-		throw new IllegalArgumentException("Function " + name + " not found");
-	}
-
-	public double getVariable(String name) throws IllegalArgumentException {
-		Double ret = observer.variables.get(name);
-		if (ret != null)
-			return observer.variables.get(name);
-		throw new IllegalArgumentException("Variable " + name + " not found");
-	}
-
-	public void setVariable(String name, double value) {
-		observer.variables.put(name, value);
-
-	}
-
-	public double parse(String definition) throws IllegalArgumentException {
-		CharStream stream = new ANTLRInputStream(definition);
-		WRBLexer lexi = new WRBLexer(stream);
-		CommonTokenStream tokens = new CommonTokenStream(lexi);
-		WRBParser parser = new WRBParser(tokens);
-		// WRBObserver observer = new WRBObserver(this);
-		parser.setBuildParseTree(true);
-		ANTLRErrorListener listener = observer;
-		parser.addErrorListener(listener);
-
-		ParseTree tree = parser.start();
-
-		ParseTreeWalker.DEFAULT.walk(observer, tree);
-		if (observer.getShitThatHappenedWhileParsing() != null) {
-
-			throw new IllegalArgumentException(observer.getShitThatHappenedWhileParsing());
-		}
-		return observer.getLastValue();
-
-	}
-
-	public double parse(InputStream defStream) throws IllegalArgumentException, IOException {
-
-		InputStreamReader r = new InputStreamReader(defStream);
-		BufferedReader br = new BufferedReader(r);
-		String command = "";
-		String line = null;
-		while ((line = br.readLine()) != null) {
-			command += line;
-		}
-
-		return parse(command);
 	}
 
 }

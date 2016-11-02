@@ -1,11 +1,8 @@
 package de.nog;
 
-import java.security.KeyStore.Entry;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
-import java.util.Map;
-
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import de.nog.antlr.WRBParser.ExpressionContext;
@@ -32,10 +29,6 @@ public class ExprFunction implements Function {
 
 	@Override
 	public double eval(double... args) {
-		//
-		int a = args.length;
-		int b = argList.size();
-
 		if (args.length != argList.size()) {
 			throw new IllegalArgumentException("Functionparameters are not matching number of definition");
 		}
@@ -63,10 +56,8 @@ public class ExprFunction implements Function {
 		temp = null;
 		while ( !stack.isEmpty()) {
 			temp = stack.pop();
-			wrbObserver.variables.put(temp.name, temp.value);
-		
+			wrbObserver.variables.put(temp.name, temp.value);		
 		}
-
 		return wrbObserver.lastValue;
 	}
 

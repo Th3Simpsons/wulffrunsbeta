@@ -24,12 +24,10 @@ package de.nog.anttest;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.antlr.v4.runtime.RecognitionException;
 import org.junit.Before;
 import org.junit.Test;
 
 import de.nog.*;
-import de.nog.anttest.*;
 
 /**
  * Test of the Wulff RunsBeta-Script language.
@@ -199,7 +197,6 @@ public class SimpleWRBScriptTest {
 		String task = "x=3";
 		
 		assertEquals(3, script.parse(task), eps);
-		script.observer.debugPrintVariables();
 		assertEquals(3, script.getVariable("x"), eps);
 	}
 	

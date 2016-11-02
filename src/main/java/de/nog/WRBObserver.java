@@ -1,23 +1,20 @@
 package de.nog;
 
-import java.awt.List;
+
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.Parser;
-import org.antlr.v4.runtime.ParserRuleContext;
+
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.atn.ATNConfigSet;
 import org.antlr.v4.runtime.dfa.DFA;
-import org.antlr.v4.runtime.misc.NotNull;
+
 import org.antlr.v4.runtime.tree.*;
 
 import de.nog.antlr.WRBLexer;
@@ -29,8 +26,6 @@ import de.nog.antlr.WRBParser.ExpressionContext;
 import de.nog.antlr.WRBParser.FunctiondefinitionContext;
 import de.nog.antlr.WRBParser.MultiContext;
 import de.nog.antlr.WRBParser.PowContext;
-//import de.nog.antlr.WRBParser.AssignContext;
-//import de.nog.antlr.WRBParser.ExpressionContext;
 import de.nog.antlr.WRBParser.StatementContext;
 import de.nog.antlr.WRBParserBaseListener;
 
@@ -69,29 +64,26 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 
 	@Override
 	public void reportContextSensitivity(Parser arg0, DFA arg1, int arg2, int arg3, int arg4, ATNConfigSet arg5) {
-		System.err.println("context sensivity shit right here ");
 		shitIDealtWith = new IllegalArgumentException("context sensivity shit right here ");
 	}
 
 	@Override
 	public void reportAttemptingFullContext(Parser arg0, DFA arg1, int arg2, int arg3, BitSet arg4, ATNConfigSet arg5) {
-		System.err.println("attempt full context shit right here ");
 		shitIDealtWith = new IllegalArgumentException("attempt full context shit right here ");
 	}
 
 	@Override
 	public void reportAmbiguity(Parser arg0, DFA arg1, int arg2, int arg3, boolean arg4, BitSet arg5,
 			ATNConfigSet arg6) {
-		System.err.println("ambigious shit right here ");
 		shitIDealtWith = new IllegalArgumentException("ambigious shit right here ");
 	}
 
-	@Override
+	/*@Override
 	public void enterStatement(StatementContext ctx) {
 		printOffset = 0;
 		// debug("enter statement. \"" + ctx.getText() + "\"");
 
-	}
+	}*/
 
 	@Override
 	public void exitAssign(AssignContext ctx) {
@@ -99,17 +91,10 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 		Double varValue = getValue(ctx.expression());
 		// debug("Assigning " + varName + " = " + varValue);
 		variables.put(varName, varValue);
-		treeValues.put(ctx, varValue);
-		debugPrintVariables();
+		treeValues.put(ctx, varValue);	
 	}
 
-	public void debugPrintVariables() {
-		for (Entry<String, Double> e : variables.entrySet()) {
-			// debug("Entry \"" + e.getKey() + "\" = " + e.getValue() +
-			// (e.getKey().equals("x") ? " (equals x)" : " (not x)"));
-
-		}
-	}
+	
 
 	@Override
 	public void exitStatement(StatementContext ctx) {
@@ -201,27 +186,33 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 
 		}
 
-		if (ctx.INTEGER() != null) {
-
-			setValue(ctx, factor * Double.parseDouble(ctx.INTEGER().getText()));
-		}
-		if (ctx.FLOAT() != null) {
-			setValue(ctx, factor * Double.parseDouble(ctx.FLOAT().getText()));
+		// Function
+		if (ctx.function() != null) {
+			setValue(ctx, factor * getValue(ctx.function()));
+			return;
 		}
 		//
 		if (ctx.expression() != null) {
 			setValue(ctx, factor * getValue(ctx.expression()));
+			return;
 		}
-		// Function
-		if (ctx.function() != null) {
-			setValue(ctx, factor * getValue(ctx.function()));
+		if (ctx.INTEGER() != null) {
+			setValue(ctx, factor * Double.parseDouble(ctx.INTEGER().getText()));
+			return;
+		}
+		if (ctx.FLOAT() != null) {
+			setValue(ctx, factor * Double.parseDouble(ctx.FLOAT().getText()));
+			return;
 		}
 		// Variable
 		if (ctx.ID() != null) {
-			if (variables.get(ctx.ID().getText()) != null)
+			if (variables.get(ctx.ID().getText()) != null) {
 				setValue(ctx, factor * variables.get(ctx.ID().getText()));
-			else
+				return;
+			} else {
 				setValue(ctx, factor * 0);
+				return;
+			}
 		}
 
 		// debug(getSpaceOffset() + "Value is " + factor * getValue(ctx));
@@ -268,48 +259,21 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 		ctx.removeLastChild();
 	}
 
-	@Override
-	public void exitFunctiondefinition(WRBParser.FunctiondefinitionContext ctx) {
-
-		// System.out.println(
-		// "Found functiondef: " + ctx.ID().get(0).getText().toString() + " = "
-		// + ctx.expression().getText());
-		/*
-		 * functions.put(ctx.ID().get(0).getText().toString(), new
-		 * ExprFunction(ctx.expression().getText(), this) {
-		 * 
-		 * @Override public double eval(double... args) { int i = 1;
-		 * 
-		 * 
-		 * for (double d : args) { System.out.println("Added x" + i + " = " + d
-		 * + " to localvarset"); wrbObserver.variables.put("x" + i++, d); }
-		 * System.out.println("Started parsing expression");
-		 * 
-		 * 
-		 * double ret = script.parse(expression); return ret; } });
-		 */
-	}
-
 	private void setValue(ParseTree ctx, double value) {
 		treeValues.put(ctx, value);
 	}
 
-	@Override
-	public void enterEveryRule(@NotNull ParserRuleContext ctx) {
-		// debug(getSpaceOffset() + "->:" +
-		// getPrintText(ctx.getClass().toString()) + " \"" + ctx.getText() +
-		// "\"");
-		printOffset++;
-	}
-
-	@Override
-	public void exitEveryRule(@NotNull ParserRuleContext ctx) {
-		// debug(getSpaceOffset() + "<-:" +
-		// getPrintText(ctx.getClass().toString()) + " \"" + ctx.getText() +
-		// "\"");
-		printOffset--;
-	}
-
+	/*
+	 * @Override public void enterEveryRule(@NotNull ParserRuleContext ctx) { //
+	 * debug(getSpaceOffset() + "->:" + //
+	 * getPrintText(ctx.getClass().toString()) + " \"" + ctx.getText() + //
+	 * "\""); //printOffset++; }
+	 * 
+	 * @Override public void exitEveryRule(@NotNull ParserRuleContext ctx) { //
+	 * debug(getSpaceOffset() + "<-:" + //
+	 * getPrintText(ctx.getClass().toString()) + " \"" + ctx.getText() + //
+	 * "\""); //printOffset--; }
+	 */
 	String getPrintText(String input) {
 		String out = input.substring(input.indexOf('$') + 1);
 		out = out.substring(0, out.indexOf("Context"));
