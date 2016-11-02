@@ -74,7 +74,7 @@ public abstract class AbstractScriptTest {
      * @throws java.lang.Exception
      */
     @Before
-    public void setUp() throws Exception {
+    public final void setUp() throws Exception {
         script = getScript();
         assertNotNull("no script implementation", script);
     }
@@ -1126,12 +1126,10 @@ public abstract class AbstractScriptTest {
      * 
      * @throws Exception
      */
-    
-    @Ignore("not ready yet") 
     @Test
+    @Ignore
     public void testTimingCachedFunctions() throws Exception {
-    
-    	final int MAX_LOOPS = 5000;
+        final int MAX_LOOPS = 5000;
         final String fmt = "\n\n" + "  Parser Timing Test    \n" + "=====================    \n"
                 + "cached :%5d \u03BCs/call  \n" + "parsed :%5d \u03BCs/call  \n" + "speedup: %.2f      \n\n";
         final double SCALED = -1000 * MAX_LOOPS;

@@ -10,15 +10,17 @@ import de.nog.WRBScript;
 
 public class SimpleHeirTest extends AbstractScriptTest {
 
-	@Before
-	public void setUp() throws Exception {
-		super.setUp();
-	}
-
+	
 	@Override
 	protected Script getScript() {
 		return new WRBScript();
 	}
+	
+	@Test
+    public final void testMixedFloatSofter() throws Exception {
+        String task = "5.2*4";
+        assertEquals(20.8, script.parse(task), eps);
+    }
 
 	
 

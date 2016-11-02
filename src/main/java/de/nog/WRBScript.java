@@ -1,7 +1,10 @@
 package de.nog;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,46 +30,163 @@ public class WRBScript implements Script {
 	public WRBScript() {
 		super();
 		observer = new WRBObserver(this);
-		
+
 		addStandardfunctions();
-		
+
 	}
-	private void addStandardfunctions(){
-		observer.functions.put("sin", new Function() {			
+
+	private void addStandardfunctions() {
+		observer.functions.put("sin", new Function() {
 			@Override
 			public double eval(double... args) {
 				return Math.sin(args[0]);
 			}
 		});
-		
-		observer.functions.put("cos", new Function() {			
+
+		observer.functions.put("cos", new Function() {
 			@Override
 			public double eval(double... args) {
 				return Math.cos(args[0]);
 			}
 		});
-		
-		
-		observer.functions.put("tan", new Function() {			
+
+		observer.functions.put("tan", new Function() {
 			@Override
 			public double eval(double... args) {
 				return Math.tan(args[0]);
 			}
 		});
-		
-		observer.functions.put("asin", new Function() {			
+
+		observer.functions.put("asin", new Function() {
 			@Override
 			public double eval(double... args) {
 				return Math.asin(args[0]);
 			}
 		});
-		observer.functions.put("acos", new Function() {			
+		observer.functions.put("acos", new Function() {
 			@Override
 			public double eval(double... args) {
 				return Math.acos(args[0]);
 			}
 		});
+		observer.functions.put("atan", new Function() {
+			@Override
+			public double eval(double... args) {
+				return Math.atan(args[0]);
+			}
+		});
+
+		observer.functions.put("min", new Function() {
+			@Override
+			public double eval(double... args) {
+				double min = Double.POSITIVE_INFINITY;
+				for (double d : args) {
+					if (d < min) {
+						min = d;
+					}
+				}
+
+				return min;
+			}
+		});
+
+		observer.functions.put("max", new Function() {
+			@Override
+			public double eval(double... args) {
+				double max = Double.NEGATIVE_INFINITY;
+				for (double d : args) {
+					if (d > max) {
+						max = d;
+					}
+				}
+
+				return max;
+			}
+		});
+
+		observer.functions.put("abs", new Function() {
+			@Override
+			public double eval(double... args) {
+				return Math.abs(args[0]);
+			}
+		});
+
+		observer.functions.put("cosh", new Function() {
+			@Override
+			public double eval(double... args) {
+				return Math.cosh(args[0]);
+			}
+		});
+		observer.functions.put("log", new Function() {
+			@Override
+			public double eval(double... args) {
+				return Math.log10(args[0]);
+			}
+		});
+		observer.functions.put("log2", new Function() {
+			@Override
+			public double eval(double... args) {
+				return Math.log(args[0]) / Math.log(2);
+			}
+		});
+		observer.functions.put("logE", new Function() {
+			@Override
+			public double eval(double... args) {
+				return Math.log(args[0]) ;
+			}
+		});
+		observer.functions.put("lb", new Function() {
+			@Override
+			public double eval(double... args) {
+				return Math.log(args[0])/Math.log(2);
+			}
+		});
+		observer.functions.put("ln", new Function() {
+			@Override
+			public double eval(double... args) {
+				return Math.log(args[0]);
+			}
+		});
+		observer.functions.put("ld", new Function() {
+			@Override
+			public double eval(double... args) {
+				return Math.log(args[0])/Math.log(2);
+			}
+		});
 		
+		observer.functions.put("log10", new Function() {
+			@Override
+			public double eval(double... args) {
+				return Math.log10(args[0]);
+			}
+		});
+
+		observer.functions.put("exp", new Function() {
+			@Override
+			public double eval(double... args) {
+				return Math.exp(args[0]);
+			}
+		});
+
+		observer.functions.put("pow", new Function() {
+			@Override
+			public double eval(double... args) {
+				return Math.pow(args[0], args[1]);
+			}
+		});
+
+		observer.functions.put("sinh", new Function() {
+			@Override
+			public double eval(double... args) {
+				return Math.sinh(args[0]);
+			}
+		});
+		observer.functions.put("sqrt", new Function() {
+			@Override
+			public double eval(double... args) {
+				return Math.sqrt(args[0]);
+			}
+		});
 	}
 
 	public Function getFunction(String name) throws IllegalArgumentException {
@@ -110,8 +230,16 @@ public class WRBScript implements Script {
 	}
 
 	public double parse(InputStream defStream) throws IllegalArgumentException, IOException {
-		// TODO Auto-generated method stub
-		return 0;
+
+		InputStreamReader r = new InputStreamReader(defStream);
+		BufferedReader br = new BufferedReader(r);
+		String command = "";
+		String line = null;
+		while ((line = br.readLine()) != null) {
+			command += line;
+		}
+
+		return parse(command);
 	}
 
 }

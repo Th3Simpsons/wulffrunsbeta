@@ -47,7 +47,7 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 	protected Map<ParseTree, Double> treeValues = new IdentityHashMap<ParseTree, Double>();
 	protected WRBScript script;
 	protected double lastValue;
-	protected RecognitionException shitIDealtWith = null;
+	protected IllegalArgumentException shitIDealtWith = null;
 	private boolean debug = true;
 
 	String getSpaceOffset() {
@@ -57,33 +57,33 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 		return space;
 	}
 
-	public RecognitionException getShitThatHappenedWhileParsing() {
+	public IllegalArgumentException getShitThatHappenedWhileParsing() {
 		return shitIDealtWith;
 	}
 
 	@Override
 	public void syntaxError(Recognizer<?, ?> arg0, Object arg1, int arg2, int arg3, String arg4,
 			RecognitionException arg5) {
-		shitIDealtWith = new RecognitionException(arg0, arg0.getInputStream(), null);
+		shitIDealtWith = new IllegalArgumentException("Syntax error");
 	}
 
 	@Override
 	public void reportContextSensitivity(Parser arg0, DFA arg1, int arg2, int arg3, int arg4, ATNConfigSet arg5) {
 		System.err.println("context sensivity shit right here ");
-		shitIDealtWith = new RecognitionException(arg0, arg0.getInputStream(), null);
+		shitIDealtWith = new IllegalArgumentException("context sensivity shit right here ");
 	}
 
 	@Override
 	public void reportAttemptingFullContext(Parser arg0, DFA arg1, int arg2, int arg3, BitSet arg4, ATNConfigSet arg5) {
 		System.err.println("attempt full context shit right here ");
-		shitIDealtWith = new RecognitionException(arg0, arg0.getInputStream(), null);
+		shitIDealtWith = new IllegalArgumentException("attempt full context shit right here ");
 	}
 
 	@Override
 	public void reportAmbiguity(Parser arg0, DFA arg1, int arg2, int arg3, boolean arg4, BitSet arg5,
 			ATNConfigSet arg6) {
 		System.err.println("ambigious shit right here ");
-		shitIDealtWith = new RecognitionException(arg0, arg0.getInputStream(), null);
+		shitIDealtWith = new IllegalArgumentException("ambigious shit right here ");
 	}
 
 	@Override
@@ -133,8 +133,11 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 		debug("last value is" + lastValue);
 	}
 
-	void debug(String msg)
-	{if(debug )System.out.println(msg);}
+	void debug(String msg) {
+		if (debug)
+			System.out.println(msg);
+	}
+
 	@Override
 	public void exitAddition(AdditionContext ctx) {
 		int k = 0;
@@ -171,42 +174,56 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 
 	@Override
 	public void exitPow(PowContext ctx) {
-		int k = 0;
+		int k = ctx.constant().size() - 1;
 		double value = getValue(ctx.constant(k));
-		ParseTree node = ctx.constant(++k);
+		ParseTree node = ctx.constant(--k);
 		while (null != node) {
-			value = Math.pow(value, getValue(node));
-			node = ctx.constant(++k);
+			value = Math.pow(getValue(node), value);
+			node = ctx.constant(--k);
 		}
 		setValue(ctx, value);
 	}
 
 	@Override
 	public void exitConstant(ConstantContext ctx) {
+		int factor = 1;
+		if (ctx.sign != null) {
+			if (!ctx.sign.isEmpty()){
+				if (ctx.sign.get(0).getText().equals("-")) {
+					debug("the following is negative");
+					factor = -1;
+				}else{
+					debug("the term " + ctx.getText() + " is positive");
+				}
+			}else{debug("the term " + ctx.getText() + " has no sign");}
+					
+		
+		}
 
 		if (ctx.INTEGER() != null) {
-			setValue(ctx, Double.parseDouble(ctx.INTEGER().getText()));
+
+			setValue(ctx, factor * Double.parseDouble(ctx.INTEGER().getText()));
 		}
 		if (ctx.FLOAT() != null) {
-			setValue(ctx, Double.parseDouble(ctx.FLOAT().getText()));
+			setValue(ctx, factor * Double.parseDouble(ctx.FLOAT().getText()));
 		}
 		//
 		if (ctx.expression() != null) {
-			setValue(ctx, getValue(ctx.expression()));
+			setValue(ctx, factor * getValue(ctx.expression()));
 		}
-		//Function
+		// Function
 		if (ctx.function() != null) {
-			setValue(ctx, getValue(ctx.function()) );
+			setValue(ctx, factor * getValue(ctx.function()));
 		}
-		//Variable
+		// Variable
 		if (ctx.ID() != null) {
 			if (variables.get(ctx.ID().getText()) != null)
-				setValue(ctx, variables.get(ctx.ID().getText()));
+				setValue(ctx, factor * variables.get(ctx.ID().getText()));
 			else
-				setValue(ctx, 0);
+				setValue(ctx, factor * 0);
 		}
 
-		debug(getSpaceOffset() + "Value is " + getValue(ctx));
+		debug(getSpaceOffset() + "Value is " + factor * getValue(ctx));
 	}
 
 	@Override
@@ -226,53 +243,49 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 		for (double a : args) {
 			xn[i++] = a;
 		}
-debug("Setting node val of " + ctx.ID());
+		debug("Setting node val of " + ctx.ID());
 		setValue(ctx, f.eval(xn));
 
 	}
 
 	@Override
 	public void enterFunctiondefinition(FunctiondefinitionContext ctx) {
-		
-		if(ctx.expression() != null){
+
+		if (ctx.expression() != null) {
 			ArrayList<String> argList = new ArrayList<String>();
-			
-			for(TerminalNode id : ctx.ID()){
-				//OHNE ID 0, weil es die funktions bezeichnung ist!!!!
-				if(id != ctx.ID(0))
-				argList.add(id.getText());
-			}	
+
+			for (TerminalNode id : ctx.ID()) {
+				// OHNE ID 0, weil es die funktions bezeichnung ist!!!!
+				if (id != ctx.ID(0))
+					argList.add(id.getText());
+			}
 			Function f = new ExprFunction(ctx.expression(), argList, this);
 			debug("Added " + ctx.ID(0).getText() + " to functions. expr = " + ctx.expression().getText());
 			functions.put(ctx.ID(0).getText(), f);
 		}
 		ctx.removeLastChild();
 	}
-	
+
 	@Override
 	public void exitFunctiondefinition(WRBParser.FunctiondefinitionContext ctx) {
 
-		
-		//System.out.println(
-		//		"Found functiondef: " + ctx.ID().get(0).getText().toString() + " = " + ctx.expression().getText());
-		/*functions.put(ctx.ID().get(0).getText().toString(), new ExprFunction(ctx.expression().getText(), this) {
-
-			@Override
-			public double eval(double... args) {
-				int i = 1;		
-				
-				
-				for (double d : args) {
-					System.out.println("Added x" + i + " = " + d + " to localvarset");
-					wrbObserver.variables.put("x" + i++, d);
-				}
-				System.out.println("Started parsing expression");
-				
-				
-				double ret = script.parse(expression);
-				return ret;
-			}
-		});*/
+		// System.out.println(
+		// "Found functiondef: " + ctx.ID().get(0).getText().toString() + " = "
+		// + ctx.expression().getText());
+		/*
+		 * functions.put(ctx.ID().get(0).getText().toString(), new
+		 * ExprFunction(ctx.expression().getText(), this) {
+		 * 
+		 * @Override public double eval(double... args) { int i = 1;
+		 * 
+		 * 
+		 * for (double d : args) { System.out.println("Added x" + i + " = " + d
+		 * + " to localvarset"); wrbObserver.variables.put("x" + i++, d); }
+		 * System.out.println("Started parsing expression");
+		 * 
+		 * 
+		 * double ret = script.parse(expression); return ret; } });
+		 */
 	}
 
 	private void setValue(ParseTree ctx, double value) {
@@ -281,13 +294,13 @@ debug("Setting node val of " + ctx.ID());
 
 	@Override
 	public void enterEveryRule(@NotNull ParserRuleContext ctx) {
-		debug(getSpaceOffset() + "->:" + getPrintText(ctx.getClass().toString()));
+		debug(getSpaceOffset() + "->:" + getPrintText(ctx.getClass().toString()) + "   \"" + ctx.getText() + "\"");
 		printOffset++;
 	}
 
 	@Override
 	public void exitEveryRule(@NotNull ParserRuleContext ctx) {
-		debug(getSpaceOffset() + "<-:" + getPrintText(ctx.getClass().toString()));
+		debug(getSpaceOffset() + "<-:" + getPrintText(ctx.getClass().toString()) + "   \"" + ctx.getText() + "\"");
 		printOffset--;
 	}
 
@@ -301,7 +314,7 @@ debug("Setting node val of " + ctx.ID());
 		if (treeValues.containsKey(node)) {
 			return treeValues.get(node);
 		}
-		throw new IllegalArgumentException(node.toString());
+		throw new IllegalArgumentException("Unable to find value for " + node.getText());
 	}
 
 	public double getLastValue() {
