@@ -27,7 +27,6 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 
-import de.nog.Script;
 import de.nog.WRBScript;
 
 /**
@@ -56,7 +55,7 @@ public class VariablesWRBScriptTest {
     }
     
     /**
-     * Test method for {@link de.lab4inf.wrb.Script#getVariable(java.lang.String)}.
+     * Test method for {@link de.de.lab4inf.wrb.Script#getVariable(java.lang.String)}.
      */
     @Test(expected=IllegalArgumentException.class)
     public final void testGetUnknownVariable() throws Exception {
@@ -64,7 +63,7 @@ public class VariablesWRBScriptTest {
         script.getVariable(key);
     }
     /**
-     * Test method for {@link de.lab4inf.wrb.Script#setVariable(java.lang.String,double)}.
+     * Test method for {@link de.de.lab4inf.wrb.Script#setVariable(java.lang.String,double)}.
      * and {@link de.lab4inf.wrb.WRBScript#getVariable(java.lang.String)}.
      */
     @Test

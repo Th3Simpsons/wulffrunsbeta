@@ -1,6 +1,5 @@
 package de.nog;
 
-
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -8,7 +7,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.Parser;
-
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
@@ -17,6 +16,7 @@ import org.antlr.v4.runtime.dfa.DFA;
 
 import org.antlr.v4.runtime.tree.*;
 
+import de.lab4inf.wrb.Function;
 import de.nog.antlr.WRBLexer;
 import de.nog.antlr.WRBParser;
 import de.nog.antlr.WRBParser.AssignContext;
@@ -77,12 +77,12 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 		shitIDealtWith = new IllegalArgumentException("ambigious shit right here ");
 	}
 
-	/*@Override
-	public void enterStatement(StatementContext ctx) {
-		printOffset = 0;
-		// debug("enter statement. \"" + ctx.getText() + "\"");
-
-	}*/
+	/*
+	 * @Override public void enterStatement(StatementContext ctx) { printOffset
+	 * = 0; // debug("enter statement. \"" + ctx.getText() + "\"");
+	 * 
+	 * }
+	 */
 
 	@Override
 	public void exitAssign(AssignContext ctx) {
@@ -90,10 +90,8 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 		Double varValue = getValue(ctx.expression());
 		// debug("Assigning " + varName + " = " + varValue);
 		variables.put(varName, varValue);
-		treeValues.put(ctx, varValue);	
+		treeValues.put(ctx, varValue);
 	}
-
-	
 
 	@Override
 	public void exitStatement(StatementContext ctx) {
@@ -124,9 +122,8 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 			}
 			node = ctx.multi(++k);
 		}
-		setValue(ctx, value);		
-		
-	
+		setValue(ctx, value);
+
 		lastValue = value;
 		// debug("last value is" + lastValue);
 	}
@@ -134,7 +131,7 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 	void debug(String msg) {
 		if (debug)
 			System.out.println(msg);
-	}	
+	}
 
 	@Override
 	public void exitMulti(MultiContext ctx) {
@@ -257,17 +254,8 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 		treeValues.put(ctx, value);
 	}
 
-	/*
-	 * @Override public void enterEveryRule(@NotNull ParserRuleContext ctx) { //
-	 * debug(getSpaceOffset() + "->:" + //
-	 * getPrintText(ctx.getClass().toString()) + " \"" + ctx.getText() + //
-	 * "\""); //printOffset++; }
-	 * 
-	 * @Override public void exitEveryRule(@NotNull ParserRuleContext ctx) { //
-	 * debug(getSpaceOffset() + "<-:" + //
-	 * getPrintText(ctx.getClass().toString()) + " \"" + ctx.getText() + //
-	 * "\""); //printOffset--; }
-	 */
+	
+
 	String getPrintText(String input) {
 		String out = input.substring(input.indexOf('$') + 1);
 		out = out.substring(0, out.indexOf("Context"));

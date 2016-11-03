@@ -67,7 +67,7 @@ public class SimpleWRBScriptTest {
 	}
 
 	/**
-	 * Test method for {@link de.nog.Script#getVariable(java.lang.String)}.
+	 * Test method for {@link de.lab4inf.wrb.Script#getVariable(java.lang.String)}.
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public final void testGetUnknownVariable() throws Exception {
@@ -77,7 +77,7 @@ public class SimpleWRBScriptTest {
 
 	/**
 	 * Test method for
-	 * {@link de.nog.Script#setVariable(java.lang.String,double)}. and
+	 * {@link de.lab4inf.wrb.Script#setVariable(java.lang.String,double)}. and
 	 * {@link de.lab4inf.wrb.WRBScript#getVariable(java.lang.String)}.
 	 */
 	@Test
@@ -90,7 +90,7 @@ public class SimpleWRBScriptTest {
 	}
 
 	/**
-	 * Test method for {@link de.nog.Script#parse(java.lang.String)}. Testing
+	 * Test method for {@link de.lab4inf.wrb.Script#parse(java.lang.String)}. Testing
 	 * some very simple operation. More to come...
 	 */
 

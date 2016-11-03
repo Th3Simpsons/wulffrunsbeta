@@ -19,7 +19,7 @@
  *
  */
 
-package de.nog;
+package de.lab4inf.wrb;
 
 
 

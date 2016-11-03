@@ -55,9 +55,6 @@ import org.junit.Before;
 
 import org.junit.Test;
 
-import de.nog.Function;
-import de.nog.Script;
-
 /**
  * Test of the Wulff RunsBeta-Script language.
  * 
@@ -89,7 +86,7 @@ public abstract class AbstractScriptTest {
 
     /**
      * Test method for
-     * {@link de.lab4inf.wrb.Script#getVariable(java.lang.String)}.
+     * {@link de.de.lab4inf.wrb.Script#getVariable(java.lang.String)}.
      */
     @Test(expected = IllegalArgumentException.class)
     public final void testGetUnknownVariable() throws Exception {
@@ -99,7 +96,7 @@ public abstract class AbstractScriptTest {
 
     /**
      * Test method for
-     * {@link de.lab4inf.wrb.Script#setVariable(java.lang.String,double)}. and
+     * {@link de.de.lab4inf.wrb.Script#setVariable(java.lang.String,double)}. and
      * {@link de.lab4inf.wrb.WRBScript#getVariable(java.lang.String)}.
      */
     @Test
@@ -172,7 +169,7 @@ public abstract class AbstractScriptTest {
     }
 
     /**
-     * Test method for {@link de.lab4inf.wrb.Script#parse(java.lang.String)}.
+     * Test method for {@link de.de.lab4inf.wrb.Script#parse(java.lang.String)}.
      * Testing a very simple operation. More to come...
      */
     @Test

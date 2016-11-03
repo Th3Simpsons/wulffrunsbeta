@@ -5,6 +5,7 @@ import java.util.Deque;
 import java.util.List;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
+import de.lab4inf.wrb.Function;
 import de.nog.antlr.WRBParser.ExpressionContext;
 
 public class ExprFunction implements Function {

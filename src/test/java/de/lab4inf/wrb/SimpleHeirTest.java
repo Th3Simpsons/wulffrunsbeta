@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import de.nog.Script;
 import de.nog.WRBScript;
 
 public class SimpleHeirTest extends AbstractScriptTest {
