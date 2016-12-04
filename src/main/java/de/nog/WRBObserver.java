@@ -84,6 +84,8 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 	 * }
 	 */
 
+	public native double differentiate(Function f, double x);
+	public native double integrate(Function f, double a, double b);
 	@Override
 	public void exitAssign(AssignContext ctx) {
 		String varName = ctx.ID().getText();
@@ -253,8 +255,6 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 	private void setValue(ParseTree ctx, double value) {
 		treeValues.put(ctx, value);
 	}
-
-	
 
 	String getPrintText(String input) {
 		String out = input.substring(input.indexOf('$') + 1);
