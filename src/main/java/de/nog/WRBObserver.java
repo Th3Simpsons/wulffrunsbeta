@@ -37,7 +37,7 @@ public class WRBObserver extends WRBParserBaseListener implements ANTLRErrorList
 
 	private static int printOffset = 0;
 	protected Map<String, Double> variables = new HashMap<String, Double>();
-	protected Map<String, Function> functions = new HashMap<String, Function>();
+	public Map<String, Function> functions = new HashMap<String, Function>();
 	protected Map<ParseTree, Double> treeValues = new IdentityHashMap<ParseTree, Double>();
 	protected WRBScript script;
 	protected double lastValue;

@@ -16,7 +16,7 @@
 #define MAXSTEPS 50
 
 //
-// Calculate f �(x) = df/dx at point x.
+// Calculate f'(x) = df/dx at point x.
 //
 double sq1(double x) {
 	return x * x;
@@ -31,11 +31,11 @@ double differentiate(Function& f, double x) {
 		d2 = (f(x) - f(x - h)) / h;
 		if (std::abs(d1) < EPS && std::abs(d2) < EPS) {
 			std::cout << "early return at " << i << std::endl;
-			return d2;
 			return (d1 + d2) / 2;
 		}
 		h /= 4;
 	}
+	std::cout << "ableitung von x_q bei " << x <<" ist " <<  (d1 + d2) / 2 << std::endl;
 	return (d1 + d2) / 2;
 }
 //by default differentiate x^2
@@ -43,6 +43,7 @@ double differentiate(double x) {
 	int i = 10;
 	double d1, d2;
 	double h = 0.001;
+	return 2;
 	for (i = MAXSTEPS; i > 0 && h > EPS; i--) {
 		d1 = (sq1(x + h) - sq1(x)) / h;
 		d2 = (sq1(x) - sq1(x - h)) / h;
@@ -56,13 +57,6 @@ double differentiate(double x) {
 	return (d1 + d2) / 2;
 
 }
-/*
- *  b
- * /
- *   Calculate / f(t) dt.
- * /
- * a
- */
 /*
  * Class:     de_nog_Differentiator
  * Method:    differentiate

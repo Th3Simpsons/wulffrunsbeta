@@ -26,8 +26,17 @@ public:
 // overloaded  operator  to  execute    double  y  = f(x)
 //  for  java  function  implementations.
 	double operator()(double x) const {
-		return env->CallDoubleMethod(instance, fct, x);
+
+		jdoubleArray param;
+		param = env->NewDoubleArray(1);
+		jdouble tmp[1];
+		tmp[0] = x;
+		env->SetDoubleArrayRegion(param, 0, 1, tmp);
+
+
+		return env->CallDoubleMethod(instance, fct, param);
 	}
+
 }
 ;
 #endif

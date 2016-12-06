@@ -12,9 +12,8 @@
 extern "C" {
 #endif
 
-
 double integrate(Function& f, double a, double b);
-double integrate( double a, double b);
+double integrateSQ(double a, double b);
 
 #ifdef __cplusplus
 }

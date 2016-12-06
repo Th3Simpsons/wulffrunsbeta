@@ -4,13 +4,17 @@
  *  Created on: 06.12.2016
  *      Author: stefan
  */
-typedef long long __int64;
-#include <inttypes.h>
+
 #include <jni.h>
-int main(){
+#include "Integrator.h"
 
+int main() {
+	printf("start\n");
+	for (double b = 1; b < 10; b += 1)
+	{
+		integrateSQ(0,b);
+	}
 
-
-	return 0;}
-
+	return 0;
+}
 
