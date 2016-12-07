@@ -13,8 +13,9 @@
 #include "JavaFunction.h"
 #include "Integrator.h"
 // precision for the numerical calculus. */
-#define EPS 1.E-5
-#define STARTSTEP 11
+#define EPS 4.E-4
+#define STARTSTEP 60;
+#define MULTI 5
 #define MAXREPEAT 4
 //
 // Calculate F(x) at point x.
@@ -35,7 +36,8 @@ double integrate(Function& f, double a, double b) {
 
 	//std::cout << "berechne integral... " << std::endl;
 	//double width = (b - a) / (double) STARTSTEP;
-	int n = 25;
+	int n = STARTSTEP
+	;
 	do {
 		approxSum = 0;
 		lastFuncVal = f(a);
@@ -58,9 +60,9 @@ double integrate(Function& f, double a, double b) {
 		normSum = (b - a) * normSum / (double) 3 / (double) n;
 
 		diff = approxSum < normSum ?
-				(normSum - approxSum) : (approxSum - normSum);
-		n = n * 5;
-	} while (diff > EPS && max_rep > 0);
+				(normSum / approxSum) : (approxSum / normSum);
+		n = n * MULTI;
+	} while (diff > 1 + EPS && max_rep > 0);
 	if (0 >= max_rep) {
 		printf("too many reps, precision=%16.14f\n", diff);
 	} else {

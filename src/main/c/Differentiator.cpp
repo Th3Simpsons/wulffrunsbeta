@@ -24,10 +24,13 @@ double sq1(double x) {
 
 double differentiate(Function& f, double x) {
 	int i = 10;
-	double d1 = 1, d2 = 2;
+	double d1 = 0, d2 = 0;
 	double ld1, ld2;
 	double h = 1.E-6;
 	double fx = f(x);
+	if (fx != f(x)) {
+		throw "Stop fuckin' with me";
+	}
 
 	for (i = MAXSTEPS; i > 0 && h > EPS; i--) {
 		ld1 = d1;
@@ -36,10 +39,10 @@ double differentiate(Function& f, double x) {
 		d1 = (f(x + h) - fx) / h;
 		d2 = (fx - f(x - h)) / h;
 		if (i != MAXSTEPS && (ld1 * ld1 < 0 || ld2 * d2 < 0)) {
-			printf("delta isse crazy!!");
-				throw "crazy shit";
-
+			//printf("delta isse crazy!!");
+			throw "crazy shit";
 		}
+
 		if (std::abs(d1) < EPS && std::abs(d2) < EPS) {
 			//	std::cout << "early return at " << i << std::endl;
 			return (d1 + d2) / 2;
