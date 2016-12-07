@@ -64,9 +64,9 @@ double integrate(Function& f, double a, double b) {
 		n = n * MULTI;
 	} while (diff > 1 + EPS && max_rep > 0);
 	if (0 >= max_rep) {
-		printf("too many reps, precision=%16.14f\n", diff);
+		//printf("too many reps, precision=%16.14f\n", diff);
 	} else {
-		printf("ended with precision %f\n", diff);
+		//printf("ended with precision %f\n", diff);
 	}
 //	std::cout << "integral von x_q von 0 bis " << b << " ist " << sum			<< std::endl;
 	return (approxSum);
