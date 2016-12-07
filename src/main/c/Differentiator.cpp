@@ -24,18 +24,30 @@ double sq1(double x) {
 
 double differentiate(Function& f, double x) {
 	int i = 10;
-	double d1, d2;
-	double h = 0.001;
+	double d1 = 1, d2 = 2;
+	double ld1, ld2;
+	double h = 1.E-6;
+	double fx = f(x);
+
 	for (i = MAXSTEPS; i > 0 && h > EPS; i--) {
-		d1 = (f(x + h) - f(x)) / h;
-		d2 = (f(x) - f(x - h)) / h;
+		ld1 = d1;
+		ld2 = d2;
+
+		d1 = (f(x + h) - fx) / h;
+		d2 = (fx - f(x - h)) / h;
+		if (i != MAXSTEPS && (ld1 * ld1 < 0 || ld2 * d2 < 0)) {
+			printf("delta isse crazy!!");
+				throw "crazy shit";
+
+		}
 		if (std::abs(d1) < EPS && std::abs(d2) < EPS) {
-			std::cout << "early return at " << i << std::endl;
+			//	std::cout << "early return at " << i << std::endl;
 			return (d1 + d2) / 2;
 		}
-		h /= 4;
+
+		h /= 8;
 	}
-	std::cout << "ableitung von x_q bei " << x <<" ist " <<  (d1 + d2) / 2 << std::endl;
+	//std::cout << "ableitung von x_q bei " << x <<" ist " <<  (d1 + d2) / 2 << std::endl;
 	return (d1 + d2) / 2;
 }
 //by default differentiate x^2
@@ -64,6 +76,12 @@ double differentiate(double x) {
  */
 JNIEXPORT jdouble JNICALL Java_de_nog_Differentiator_differentiate(JNIEnv * env,
 		jobject th, jobject func, jdouble x) {
-	JavaFunction f =JavaFunction(env,func);
-	return differentiate(f, x);
+	JavaFunction f = JavaFunction(env, func);
+	try {
+		return differentiate(f, x);
+	} catch (const char *message) {
+		jclass Exception = env->FindClass("java/lang/IllegalStateException");
+		env->ThrowNew(Exception, "no convergence");
+	}
+	return -1;
 }
