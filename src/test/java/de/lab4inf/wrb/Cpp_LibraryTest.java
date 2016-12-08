@@ -13,7 +13,7 @@ public class Cpp_LibraryTest {
 
 	@Test
 	public void test() {
-		System.load("/home/stefan/git/wulffrunsbeta/src/main/libHPK_Praktikum4_Cpp");
+		System.load("/home/ms/s/so634597/git/wulffrunsbeta/src/main/libHPK_Praktikum4_Cpp");
 	}
 
 	@Test
@@ -94,7 +94,7 @@ public class Cpp_LibraryTest {
 	private void drawTable(Function f,double a, double b,double step) {
 		Differentiator d = new Differentiator();
 		Integrator i = new Integrator();
-
+System.out.println("x     f(x)            f'               F+c");
 		double dx, ix;
 
 		for (double x = a; x <= b; x += step) {

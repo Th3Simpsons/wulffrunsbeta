@@ -7,6 +7,6 @@ public class Differentiator {
 	public native double differentiate(Function f, double x);
 
 	static {
-		System.load("/home/stefan/git/wulffrunsbeta/src/main/libHPK_Praktikum4_Cpp");
+		System.load("/home/ms/s/so634597/git/wulffrunsbeta/src/main/libHPK_Praktikum4_Cpp");
 	}
 }
