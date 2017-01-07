@@ -1,4 +1,4 @@
-package de.nog;
+package de.lab4inf.wrb.rest;
 
 import java.io.File;
 import java.io.IOException;

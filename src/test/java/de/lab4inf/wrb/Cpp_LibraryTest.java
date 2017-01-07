@@ -4,10 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import de.nog.Differentiator;
-import de.nog.Integrator;
-import de.nog.WRBScript;
-
 public class Cpp_LibraryTest {
 	private static double EPS = 1.E-2;
 

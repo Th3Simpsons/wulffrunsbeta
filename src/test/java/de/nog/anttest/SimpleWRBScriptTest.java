@@ -27,6 +27,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.lab4inf.wrb.WRBScript;
 import de.nog.*;
 
 /**
@@ -78,7 +79,7 @@ public class SimpleWRBScriptTest {
 	/**
 	 * Test method for
 	 * {@link de.lab4inf.wrb.Script#setVariable(java.lang.String,double)}. and
-	 * {@link de.lab4inf.wrb.WRBScript#getVariable(java.lang.String)}.
+	 * {@link de.lab4inf.wrb.de.lab4inf.wrb.rest.WRBScript#getVariable(java.lang.String)}.
 	 */
 	@Test
 	public final void testSetGetVariable() throws Exception {

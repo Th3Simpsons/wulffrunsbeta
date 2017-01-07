@@ -1,4 +1,4 @@
-package de.nog;
+package de.lab4inf.wrb;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -16,7 +16,6 @@ import org.antlr.v4.runtime.dfa.DFA;
 
 import org.antlr.v4.runtime.tree.*;
 
-import de.lab4inf.wrb.Function;
 import de.nog.antlr.WRBLexer;
 import de.nog.antlr.WRBParser;
 import de.nog.antlr.WRBParser.AssignContext;

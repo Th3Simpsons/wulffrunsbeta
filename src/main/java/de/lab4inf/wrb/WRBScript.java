@@ -1,4 +1,4 @@
-package de.nog;
+package de.lab4inf.wrb;
 
 
 import java.io.BufferedReader;
@@ -14,8 +14,6 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
-import de.lab4inf.wrb.Function;
-import de.lab4inf.wrb.Script;
 import de.nog.antlr.WRBLexer;
 import de.nog.antlr.WRBParser;
 
