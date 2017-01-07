@@ -2,8 +2,8 @@
 #include <jni.h>
 /* Header for class de_nog_Integrator */
 
-#ifndef _Included_de_nog_Integrator
-#define _Included_de_nog_Integrator
+#ifndef _Included_de_lab4inf_wrb_Integrator
+#define _Included_de_lab4inf_wrb_Integrator
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -12,7 +12,7 @@ extern "C" {
  * Method:    integrate
  * Signature: (Lde/lab4inf/wrb/Function;DD)D
  */
-JNIEXPORT jdouble JNICALL Java_de_nog_Integrator_integrate
+JNIEXPORT jdouble JNICALL Java_de_lab4inf_wrb_Integrator_integrate
   (JNIEnv *, jobject, jobject, jdouble, jdouble);
 
 #ifdef __cplusplus

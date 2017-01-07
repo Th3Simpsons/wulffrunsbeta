@@ -13,7 +13,7 @@ extern "C" {
 #endif
 
 double differentiate(Function& f, double x);
-double differentiateSQ(double x);
+double differentiate(double x);
 
 #ifdef __cplusplus
 }

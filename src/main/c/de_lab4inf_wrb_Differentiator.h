@@ -2,8 +2,8 @@
 #include <jni.h>
 /* Header for class de_nog_Differentiator */
 
-#ifndef _Included_de_nog_Differentiator
-#define _Included_de_nog_Differentiator
+#ifndef _Included_de_lab4inf_wrb_Differentiator
+#define _Included_de_lab4inf_wrb_Differentiator
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -12,7 +12,7 @@ extern "C" {
  * Method:    differentiate
  * Signature: (Lde/lab4inf/wrb/Function;D)D
  */
-JNIEXPORT jdouble JNICALL Java_de_nog_Differentiator_differentiate
+JNIEXPORT jdouble JNICALL Java_de_lab4inf_wrb_Differentiator_differentiate
   (JNIEnv *, jobject, jobject, jdouble);
 
 #ifdef __cplusplus
