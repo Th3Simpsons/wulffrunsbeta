@@ -17,11 +17,7 @@ public class WRBClient extends AbstractWRBClient {
 		super(hostUrl);
 	}
 
-	public String sayHello(String msg) throws Exception {
-		msg = URLEncoder.encode(msg, "UTF-8");
-		String path = format("WRBService/Hello?msg=%s", msg);
-		return submitRequest(path);
-	}
+	
 
 	public String getDifferentiation(String fct) throws Exception {
 		fct = URLEncoder.encode(fct, "UTF-8");
@@ -42,13 +38,26 @@ public class WRBClient extends AbstractWRBClient {
 		return submitRequest(path);
 	}
 
-	public static void main(String[] args) {
-		HelloClient testHello = new HelloClient("localhost:8080");
-		try {
-			System.out.println(testHello.sayHello("Gib mir ein Echo"));
-		} catch (Exception e) {
+	//////////////////////////////////////////////////////////////
 
-			e.printStackTrace();
-		}
+	public String getIntegration(String fct) throws Exception {
+		fct = URLEncoder.encode(fct, "UTF-8");
+		String path = format("WRBService/integrate?fct=%s", fct);
+		return submitRequest(path);
 	}
+
+	public String getIntegration(String fct, String def) throws Exception {
+		fct = URLEncoder.encode(fct, "UTF-8");
+		String path = format("WRBService/integrate?fct=%s&def=%s", fct, escapeHTTP(def));
+		return submitRequest(path);
+	}
+
+	public String getIntegration(String fct, String def, String fmt) throws Exception {
+		fct = URLEncoder.encode(fct, "UTF-8");
+		String path = format("WRBService/integrate?fct=%s&def=%s&fmt=%s", escapeHTTP(fct), escapeHTTP(def),
+				escapeHTTP(fmt));
+		return submitRequest(path);
+	}
+	
+	
 }

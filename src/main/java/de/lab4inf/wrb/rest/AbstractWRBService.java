@@ -46,6 +46,7 @@ abstract class AbstractWRBService {
 	public static final String APPLICATION_JSON = "application/vnd.api+json";
 	public static final String DEF = "xmin=0; xmax=1; dx=0.2;";
 	public static final String DEF_ONLY_X = "x=0;";
+	public static final String DEF_FOR_INTEGRAL = "a=0; b=1;";
 	public static final String FMT = "%.6f";
 	protected final static Locale LOCALE = Locale.US;
 	protected final Logger log = Logger.getLogger(SERVICE);

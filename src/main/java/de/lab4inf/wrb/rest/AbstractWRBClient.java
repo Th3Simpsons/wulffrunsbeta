@@ -122,6 +122,13 @@ public abstract class AbstractWRBClient {
 		out = in.replace("%", "%25");
 		out = out.replace(" ", "%20");
 		out = out.replace("^", "%5E");
+		out = out.replace("+", "%2B");
+		out = out.replace("-", "%2D");
+		out = out.replace("*", "%2A");
+		out = out.replace("/", "%2F");
+		
+		
+		
 		return out;
 	}
 

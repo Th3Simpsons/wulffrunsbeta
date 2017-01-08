@@ -47,9 +47,10 @@ import de.lab4inf.wrb.WRBScript;
  *          nwulff Exp $
  */
 @Path(AbstractWRBService.SERVICE)
-public class WRBRESTDifferentiationService extends AbstractWRBService {
-	private final Differentiator differentiator = new Differentiator();
-	
+public class WRBRESTIntegrationService extends AbstractWRBService {
+
+	private final Integrator integrator = new Integrator();
+
 	/**
 	 * Calculate the function derivative at point xmin and return the result as
 	 * a double.
@@ -63,63 +64,58 @@ public class WRBRESTDifferentiationService extends AbstractWRBService {
 	 * @return String with the calculated double f'(x)
 	 */
 	@GET
-	@Path(FCT_DIFFERENTIAL_PATH)
+	@Path(FCT_INTEGRAL_PATH)
 	@Produces(MediaType.TEXT_PLAIN)
 	@Consumes(MediaType.TEXT_PLAIN)
-	public String getFctDifferential(@QueryParam("fct") String fctName,
-			@DefaultValue(DEF_ONLY_X) @QueryParam("def") String definition,
+	public String getFctIntegral(@QueryParam("fct") String fctName,
+			@DefaultValue(DEF_FOR_INTEGRAL) @QueryParam("def") String definition,
 			@DefaultValue(FMT) @QueryParam("fmt") String fmt) {
-		log.info(format("GET Differential PLAIN fct=%s def=%s fmt=%s", fctName, definition, fmt));
-		double x = Double.NaN, xmin = 0, xmax = 1, dx = 1;
-		boolean returnArray = true;
+		log.info(format("GET Integral PLAIN fct=%s def=%s fmt=%s", fctName, definition, fmt));
+		double a = 0, b = 1;
+		// boolean returnArray = true;
 		String retValue;
 		try {
 			WRBScript localScript = new WRBScript();
 			localScript.parse(definition);
 			// x = localScript.getVariable("x"); //Hier kann ncits zurück kommen
 			try {
-				xmin = localScript.getVariable("xmin");
-				xmax = localScript.getVariable("xmax");
-				dx = localScript.getVariable("dx");
-				if (dx == 0) {
-					throw new IllegalArgumentException();
-				}
+				a = localScript.getVariable("a");
 			} catch (Exception e) {
-				returnArray = false;
+				a = 0;
+			}
+			try {
+				b = localScript.getVariable("b");
+			} catch (Exception e) {
+				b = 1;
 			}
 
-			if (returnArray) {
-				retValue = "{";
-				for (x = xmin; x <= xmax; x += dx) {
-					Function fct = localScript.getFunction(fctName);
-					double y = differentiator.differentiate(fct, x);
-					retValue += format(Locale.US, fmt, y) + ((x + dx <= xmax) ? "," : "");
-				}
+			Function fct = localScript.getFunction(fctName);
+			log.info(format("Differential %s(%f,%f) ", fctName, a, b));
+			double y = integrator.integrate(fct, a, b);
+			retValue = format(Locale.US, fmt, y);
 
-				retValue += "}";
-
-			} else {
-				x = localScript.getVariable("x"); //
-				Function fct = localScript.getFunction(fctName);
-				log.info(format("Differential %s(%f) ", fctName, x));
-				double y = differentiator.differentiate(fct, x);
-				retValue = format(Locale.US, fmt, y);
-			}
 		} catch (Exception e) {
-			log.severe(format("%s.%s: %s %s'(%f)", getClass().getSimpleName(), "getFctDifferential", e, fctName, x));
+			log.severe(format("%s.%s: %s %f_/%f %s()", getClass().getSimpleName(), "getFctIntegral", e, a, b, fctName));
 			retValue = e.toString();
 		}
 		log.info(format("RET %s", retValue));
 		return retValue;
 	}
 
+	/**
+	 * REST service implementation of the sayHello RMI example. HTML formated.
+	 * 
+	 * @param message
+	 *            received from the client
+	 * @return String with the actual time and thread plus message
+	 */
 	@GET
-	@Path(FCT_DIFFERENTIAL_PATH)
+	@Path(FCT_INTEGRAL_PATH)
 	@Produces(TEXT_HTML)
 	@Consumes(TEXT_HTML)
-	public String getDifferentialHtml(@QueryParam("fct") String fctName,
-	@DefaultValue(DEF_ONLY_X) @QueryParam("def") String definition,
-	@DefaultValue(FMT) @QueryParam("fmt") String fmt) {
+	public String getIntegralHtml(@QueryParam("fct") String fctName,
+			@DefaultValue(DEF_FOR_INTEGRAL) @QueryParam("def") String definition,
+			@DefaultValue(FMT) @QueryParam("fmt") String fmt) {
 		Thread t = Thread.currentThread();
 		Date d = new Date();
 		StringBuilder sb = new StringBuilder();

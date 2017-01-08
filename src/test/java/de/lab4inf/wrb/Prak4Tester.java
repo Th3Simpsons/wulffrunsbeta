@@ -39,8 +39,8 @@ import static org.junit.Assert.assertTrue;
  * @version $Id: Prak4Tester.java,v 1.2 2014/12/01 09:41:57 nwulff Exp $
  */
 public abstract class Prak4Tester {
-    static final String           DIFFERENTIATOR       = "de.nog.Differentiator";
-    static final String           INTEGRATOR           = "de.nog.Integrator";
+    static final String           DIFFERENTIATOR       = "de.lab4inf.wrb.Differentiator";
+    static final String           INTEGRATOR           = "de.lab4inf.wrb.Integrator";
     static final double           EPS                  = 5.E-7;                          // relaxed tolerance...
     static final int              CALLS_DIFFERENTIATOR = 32;                             // maximal calls for differentiation
     static final int              CALLS_INTEGRATOR     = 4096;                           // maximal calls for integration

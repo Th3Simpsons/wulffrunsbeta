@@ -7,5 +7,6 @@ public class Prak4TesterHeir extends Prak4Tester {
 		
 		return new WRBScript();
 	}
+	
 
 }

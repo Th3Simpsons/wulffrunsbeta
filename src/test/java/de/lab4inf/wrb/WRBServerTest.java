@@ -2,9 +2,7 @@ package de.lab4inf.wrb;
 
 import static org.junit.Assert.*;
 
-import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -94,6 +92,38 @@ public class WRBServerTest {
 		}
 	}
 
+	
+	@Test
+	public void integrateTestDefineOwnFunction() throws Exception {
+		String response = wrbClient.getIntegration("f", "f(x) = x^3; a=0; b=2;", "%.2f");
+		if (!"4.00".equals(response)) {
+			fail("Response is bad. Response=" + response);
+		} else {
+			if (verbose)
+				System.out.println("success: " + response);
+		}
+	}
+	
+	@Test
+	public void integrateTestDefineOwnFunction2() throws Exception {
+		String response = wrbClient.getIntegration("f", "f(x)=x^3; a=0; b=3;", "%.2f");
+		if (!"20.25".equals(response)) {
+			fail("Response is bad. Response=" + response);
+		} else {
+			if (verbose)
+				System.out.println("success: " + response);
+		}
+	}
+	@Test
+	public void integrateTestDefineOwnFunction3() throws Exception {
+		String response = wrbClient.getIntegration("f", "a=0; b=3; f(x)=x*x*x+5", "%.2f");
+		if (!"35.25".equals(response)) {
+			fail("Response is bad. Response=" + response);
+		} else {
+			if (verbose)
+				System.out.println("success: " + response);
+		}
+	}
 	@AfterClass
 	public static void tearDownServer() {
 		if(verbose)System.out.println("Test ended: Tear down");

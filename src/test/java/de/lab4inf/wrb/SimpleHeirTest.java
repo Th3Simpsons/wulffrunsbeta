@@ -19,6 +19,11 @@ public class SimpleHeirTest extends AbstractScriptTest {
         assertEquals(20.8, script.parse(task), eps);
     }
 
+	@Test
+    public final void testStrangeFunctionDefinitionError() throws Exception {
+        String task = "f(x)=x^3+5;f(3)";
+        assertEquals(32, script.parse(task), eps);
+    }
 	
 
 }

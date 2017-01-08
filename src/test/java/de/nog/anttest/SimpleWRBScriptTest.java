@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.lab4inf.wrb.WRBScript;
-import de.nog.*;
+
 
 /**
  * Test of the Wulff RunsBeta-Script language.
