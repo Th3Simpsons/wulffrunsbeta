@@ -1,4 +1,4 @@
-package de.lab4inf.wrb.rest;
+package de.lab4inf.wrb;
 
 import java.io.File;
 import java.io.IOException;

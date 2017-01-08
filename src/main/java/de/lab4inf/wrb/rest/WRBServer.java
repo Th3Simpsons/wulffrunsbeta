@@ -42,7 +42,7 @@ public class WRBServer {
     // Base URI the HTTP server will listen on.
     public static String BASE_URI;
     // our one and only (singleton) server at a time.
-    private static HttpServer server;
+    public static HttpServer server;
 
     /**
      * Initialisation of the HttpServer parging the host and port number.

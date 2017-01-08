@@ -6,8 +6,6 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import de.lab4inf.wrb.rest.Main;
-
 public class PrintWulffTest {
 
 	@Test

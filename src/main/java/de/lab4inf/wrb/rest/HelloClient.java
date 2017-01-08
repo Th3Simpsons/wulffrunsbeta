@@ -28,20 +28,30 @@ import java.net.URLEncoder;
  * Simple implementation of a REST Client.
  *
  * @author nwulff
- * @since  05.01.2017
+ * @since 05.01.2017
  * @version $Id: HelloClient.java,v 1.1 2017/01/06 10:32:06 nwulff Exp $
  */
 public class HelloClient extends AbstractWRBClient {
-    /**
-    * @param hostUrl
-    */
-    public HelloClient(String hostUrl) {
-        super(hostUrl);
-    }
+	/**
+	 * @param hostUrl
+	 */
+	public HelloClient(String hostUrl) {
+		super(hostUrl);
+	}
 
-    public String sayHello(String msg) throws Exception {
-        msg = URLEncoder.encode(msg, "UTF-8");
-        String path = format("WRBService/Hello?msg=%s", msg);
-        return submitRequest(path);
-    }
+	public String sayHello(String msg) throws Exception {
+		msg = URLEncoder.encode(msg, "UTF-8");
+		String path = format("WRBService/Hello?msg=%s", msg);
+		return submitRequest(path);
+	}
+
+	public static void main(String[] args) {
+		HelloClient testHello = new HelloClient("localhost:8080");
+		try {
+			System.out.println(testHello.sayHello("Gib mir ein Echo"));
+		} catch (Exception e) {
+
+			e.printStackTrace();
+		}
+	}
 }

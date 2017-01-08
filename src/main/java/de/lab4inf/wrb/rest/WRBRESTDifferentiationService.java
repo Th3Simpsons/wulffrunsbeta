@@ -40,42 +40,75 @@ import de.lab4inf.wrb.WRBScript;
  * WebService for WRB Function parsing and evaluation.
  *
  * @author nwulff
- * @since  08.12.2016
- * @version $Id: WRBRESTDifferentiationService.java,v 1.3 2017/01/06 17:18:00 nwulff Exp $
+ * @since 08.12.2016
+ * @version $Id: WRBRESTDifferentiationService.java,v 1.3 2017/01/06 17:18:00
+ *          nwulff Exp $
  */
 @Path(AbstractWRBService.SERVICE)
 public class WRBRESTDifferentiationService extends AbstractWRBService {
-    private final Differentiator differentiator = new Differentiator();
+	private final Differentiator differentiator = new Differentiator();
 
-    /**
-     * Calculate the function derivative at point xmin and return the result as a double. 
-     * @param fctName the name of the function
-     * @param definition the script definition of the function f and the x value.
-     * @param fmt the format specification for the return value
-     * @return String with the calculated double f'(x) 
-     */
-    @GET
-    @Path(FCT_DIFFERENTIAL_PATH)
-    @Produces(MediaType.TEXT_PLAIN)
-    @Consumes(MediaType.TEXT_PLAIN)
-    public String getFctDifferential(@QueryParam("fct") String fctName,
-            @DefaultValue(DEF) @QueryParam("def") String definition, @DefaultValue(FMT) @QueryParam("fmt") String fmt) {
-        log.info(format("GET Differential PLAIN fct=%s def=%s fmt=%s", fctName, definition, fmt));
-        double x = Double.NaN;
-        String retValue;
-        try {
-            WRBScript localScript = new WRBScript();
-            localScript.parse(definition);
-            x = localScript.getVariable("x");
-            Function fct = localScript.getFunction(fctName);
-            log.info(format("Differential %s(%f) ", fctName, x));
-            double y = differentiator.differentiate(fct, x);
-            retValue = format(Locale.US, fmt, y);
-        } catch (Exception e) {
-            log.severe(format("%s.%s: %s %s'(%f)", getClass().getSimpleName(), "getFctDifferential", e, fctName, x));
-            retValue = e.toString();
-        }
-        log.info(format("RET %s", retValue));
-        return retValue;
-    }
+	/**
+	 * Calculate the function derivative at point xmin and return the result as
+	 * a double.
+	 * 
+	 * @param fctName
+	 *            the name of the function
+	 * @param definition
+	 *            the script definition of the function f and the x value.
+	 * @param fmt
+	 *            the format specification for the return value
+	 * @return String with the calculated double f'(x)
+	 */
+	@GET
+	@Path(FCT_DIFFERENTIAL_PATH)
+	@Produces(MediaType.TEXT_PLAIN)
+	@Consumes(MediaType.TEXT_PLAIN)
+	public String getFctDifferential(@QueryParam("fct") String fctName,
+			@DefaultValue(DEF_ONLY_X) @QueryParam("def") String definition,
+			@DefaultValue(FMT) @QueryParam("fmt") String fmt) {
+		log.info(format("GET Differential PLAIN fct=%s def=%s fmt=%s", fctName, definition, fmt));
+		double x = Double.NaN, xmin = 0, xmax = 1, dx = 1;
+		boolean returnArray = true;
+		String retValue;
+		try {
+			WRBScript localScript = new WRBScript();
+			localScript.parse(definition);
+			// x = localScript.getVariable("x"); //Hier kann ncits zurück kommen
+			try {
+				xmin = localScript.getVariable("xmin");
+				xmax = localScript.getVariable("xmax");
+				dx = localScript.getVariable("dx");
+				if (dx == 0) {
+					throw new IllegalArgumentException();
+				}
+			} catch (Exception e) {
+				returnArray = false;
+			}
+
+			if (returnArray) {
+				retValue = "{";
+				for (x = xmin; x <= xmax; x += dx) {
+					Function fct = localScript.getFunction(fctName);
+					double y = differentiator.differentiate(fct, x);
+					retValue += format(Locale.US, fmt, y) + ((x + dx <= xmax) ? "," : "");
+				}
+
+				retValue += "}";
+
+			} else {
+				x = localScript.getVariable("x"); //
+				Function fct = localScript.getFunction(fctName);
+				log.info(format("Differential %s(%f) ", fctName, x));
+				double y = differentiator.differentiate(fct, x);
+				retValue = format(Locale.US, fmt, y);
+			}
+		} catch (Exception e) {
+			log.severe(format("%s.%s: %s %s'(%f)", getClass().getSimpleName(), "getFctDifferential", e, fctName, x));
+			retValue = e.toString();
+		}
+		log.info(format("RET %s", retValue));
+		return retValue;
+	}
+
 }
