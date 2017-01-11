@@ -34,7 +34,7 @@ public class WRBScript implements Script {
 	}
 	
 	private String dontFuckingFuckWithMe(String in) {
-		while (in.contains("e-0")) {
+		while (in.contains("e-0") ||in.contains("e+0")) {
 			int e = in.indexOf('e');
 			int a = e - 1;
 			int b = e + 4;
@@ -56,6 +56,7 @@ public class WRBScript implements Script {
 			in = in.replace(newNumber, format("%.6f", x));
 
 		}
+		
 		return in;
 	}
 
