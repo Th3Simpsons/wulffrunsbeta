@@ -33,7 +33,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import de.lab4inf.wrb.Differentiator;
 import de.lab4inf.wrb.Function;
 import de.lab4inf.wrb.Integrator;
 import de.lab4inf.wrb.WRBScript;
