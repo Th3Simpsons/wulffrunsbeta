@@ -41,6 +41,7 @@ abstract class AbstractWRBService {
 	public static final String FCT_VALUES_PATH = "evaluate";
 	public static final String FCT_INTEGRAL_PATH = "integrate";
 	public static final String FCT_DIFFERENTIAL_PATH = "differentiate";
+	public static final String FCT_EVALUATION_PATH = "evaluate";
 	public static final String TEXT_PLAIN = MediaType.TEXT_PLAIN;
 	public static final String TEXT_HTML = MediaType.TEXT_HTML;
 	public static final String APPLICATION_JSON = "application/vnd.api+json";
@@ -52,7 +53,7 @@ abstract class AbstractWRBService {
 	protected final Logger log = Logger.getLogger(SERVICE);
 
 	AbstractWRBService() {
-		log.setLevel(Level.WARNING);
+		log.setLevel(Level.ALL);
 	}
 
 	/**

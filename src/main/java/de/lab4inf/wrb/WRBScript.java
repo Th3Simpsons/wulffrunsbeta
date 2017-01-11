@@ -1,11 +1,12 @@
 package de.lab4inf.wrb;
 
+import static java.lang.String.format;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
+import java.util.Set;
 
 import org.antlr.v4.runtime.ANTLRErrorListener;
 import org.antlr.v4.runtime.ANTLRInputStream;
@@ -28,11 +29,39 @@ public class WRBScript implements Script {
 		super();
 		observer = new WRBObserver(this);
 
-	
 		addStandardfunctions();
 
 	}
+	
+	private String dontFuckingFuckWithMe(String in) {
+		while (in.contains("e-0")) {
+			int e = in.indexOf('e');
+			int a = e - 1;
+			int b = e + 4;
+			double x = 0;
+			
+			String newNumber = "?";
+			while (true) {
+				a--;
+				try {
+					newNumber = in.substring(a, b);
+					x = Double.valueOf(newNumber);
 
+				} catch (Exception ex) {
+					a++;
+					break;
+				}
+			}
+			newNumber = in.substring(a, b);
+			in = in.replace(newNumber, format("%.6f", x));
+
+		}
+		return in;
+	}
+
+	public Set<String> getFunctions() {
+		return observer.functions.keySet();
+	}
 
 	public Function getFunction(String name) throws IllegalArgumentException {
 		Function f = observer.functions.get(name);
@@ -54,6 +83,11 @@ public class WRBScript implements Script {
 	}
 
 	public double parse(String definition) throws IllegalArgumentException {
+		
+		definition = dontFuckingFuckWithMe(definition);
+		
+		
+		
 		CharStream stream = new ANTLRInputStream(definition);
 		WRBLexer lexi = new WRBLexer(stream);
 		CommonTokenStream tokens = new CommonTokenStream(lexi);
@@ -66,7 +100,9 @@ public class WRBScript implements Script {
 		ParseTree tree = parser.start();
 
 		ParseTreeWalker.DEFAULT.walk(observer, tree);
-		if (observer.getShitThatHappenedWhileParsing() != null) {			throw new IllegalArgumentException(observer.getShitThatHappenedWhileParsing());		}
+		if (observer.getShitThatHappenedWhileParsing() != null) {
+			throw new IllegalArgumentException(observer.getShitThatHappenedWhileParsing());
+		}
 		return observer.getLastValue();
 
 	}
@@ -83,6 +119,7 @@ public class WRBScript implements Script {
 
 		return parse(command);
 	}
+
 	private void addStandardfunctions() {
 		observer.functions.put("sin", new Function() {
 			@Override
@@ -179,13 +216,13 @@ public class WRBScript implements Script {
 		observer.functions.put("logE", new Function() {
 			@Override
 			public double eval(double... args) {
-				return Math.log(args[0]) ;
+				return Math.log(args[0]);
 			}
 		});
 		observer.functions.put("lb", new Function() {
 			@Override
 			public double eval(double... args) {
-				return Math.log(args[0])/Math.log(2);
+				return Math.log(args[0]) / Math.log(2);
 			}
 		});
 		observer.functions.put("ln", new Function() {
@@ -197,10 +234,10 @@ public class WRBScript implements Script {
 		observer.functions.put("ld", new Function() {
 			@Override
 			public double eval(double... args) {
-				return Math.log(args[0])/Math.log(2);
+				return Math.log(args[0]) / Math.log(2);
 			}
 		});
-		
+
 		observer.functions.put("log10", new Function() {
 			@Override
 			public double eval(double... args) {

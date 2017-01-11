@@ -46,9 +46,7 @@ import de.lab4inf.wrb.WRBScript;
  *          nwulff Exp $
  */
 @Path(AbstractWRBService.SERVICE)
-public class WRBRESTIntegrationService extends AbstractWRBService {
-
-	private final Integrator integrator = new Integrator();
+public class WRBRESTEvaluationService extends AbstractWRBService {
 
 	/**
 	 * Calculate the function derivative at point xmin and return the result as
@@ -63,53 +61,65 @@ public class WRBRESTIntegrationService extends AbstractWRBService {
 	 * @return String with the calculated double f'(x)
 	 */
 	@GET
-	@Path(FCT_INTEGRAL_PATH)
+	@Path(FCT_EVALUATION_PATH)
 	@Produces(MediaType.TEXT_PLAIN)
 	@Consumes(MediaType.TEXT_PLAIN)
-	public String getFctIntegral(@QueryParam("fct") String fctName,
+	public String getEvaluation(@QueryParam("fct") String fctName,
 			@DefaultValue(DEF_FOR_INTEGRAL) @QueryParam("def") String definition,
 			@DefaultValue(FMT) @QueryParam("fmt") String fmt) {
-		log.info(format("GET Integral PLAIN fct=%s def=%s fmt=%s", fctName, definition, fmt));
-		double a = 0, b = 1;
+		log.info(format("GET Evaluate PLAIN fct=%s def=%s fmt=%s", fctName, definition, fmt));
+		double xmin = 0, xmax = 1, dx = 0.2;
+		boolean returnArray = true;
 		// boolean returnArray = true;
+	
+		
+		
 		String retValue;
 		try {
 			WRBScript localScript = new WRBScript();
 			localScript.parse(definition);
-			// x = localScript.getVariable("x"); //Hier kann ncits zurück kommen
-			try {
-				a = localScript.getVariable("a");
-			} catch (Exception e) {
-				try {
-					a = localScript.getVariable("xmin");
-				} catch (Exception ex) {
-					a = 0;
-				}
-			}
-			try {
-				b = localScript.getVariable("b");
-			} catch (Exception e) {
-				try {
-					b = localScript.getVariable("xmax");
 
-				} catch (Exception ex) {
-					b = 1;
+			// get xmin xmax deltax
+			try {
+				xmin = localScript.getVariable("xmin");
+				xmax = localScript.getVariable("xmax");
+				dx = localScript.getVariable("dx");
+				if (dx == 0) {
+					throw new IllegalArgumentException();
 				}
+			} catch (Exception e) {
+				returnArray = false;
 			}
 
-			Function fct = localScript.getFunction(fctName);
-			log.info(format("Integral %s(%f,%f) ", fctName, a, b));
-			double y = integrator.integrate(fct, a, b);
-			retValue = format(Locale.US, fmt, y);
+			Function f = localScript.getFunction(fctName);
+
+			if (returnArray) {
+				retValue = fctName + ": [";
+
+				for (double x = xmin; x <= xmax; x += dx) {
+					double y = f.eval(x);
+					retValue += format(Locale.US, fmt, x) + "," + format(Locale.US, fmt, y) //+ ",";
+							+ (x + dx <= xmax ? "," : "");
+				}
+				double y = f.eval(xmax);
+				//retValue += format(Locale.US, fmt, xmax) + "," + format(Locale.US, fmt, y);
+				//+ (x + dx <= xmax ? "," : "");
+				retValue += "]";
+			} else {
+
+				retValue = localScript.parse(fctName + "(1)") + "";
+				log.info(format("Evaluate %s(1) (This is bad... I guess)", fctName));
+
+			}
 
 		} catch (Exception e) {
-			log.severe(format("%s.%s: %s %f_/%f %s()", getClass().getSimpleName(), "getFctIntegral", e, a, b, fctName));
+			log.severe(format("%s.%s: %s ", getClass().getSimpleName(), "getEvaluation", e));
 			retValue = e.toString();
 		}
 		log.info(format("RET %s", retValue));
 		return retValue;
 	}
-
+	
 	/**
 	 * REST service implementation of the sayHello RMI example. HTML formated.
 	 * 
@@ -118,7 +128,7 @@ public class WRBRESTIntegrationService extends AbstractWRBService {
 	 * @return String with the actual time and thread plus message
 	 */
 	@GET
-	@Path(FCT_INTEGRAL_PATH)
+	@Path(FCT_EVALUATION_PATH)
 	@Produces(TEXT_HTML)
 	@Consumes(TEXT_HTML)
 	public String getIntegralHtml(@QueryParam("fct") String fctName,
@@ -133,6 +143,28 @@ public class WRBRESTIntegrationService extends AbstractWRBService {
 		sb.append(format("Thread: %s <br>Time: %s<br>FunctionName: %s<br>def: %s", t, d, fctName, definition));
 		sb.append("</body></html>");
 		String retValue = sb.toString();
+		return retValue;
+	}
+
+	@GET
+	@Path(FCT_NAMES_PATH)
+	@Produces(MediaType.TEXT_PLAIN)
+	@Consumes(MediaType.TEXT_PLAIN)
+	public String getFctIntegral() {
+		log.info("GET getFunctions PLAIN ");
+		double a = 0, b = 1;
+		// boolean returnArray = true;
+		String retValue;
+		try {
+			WRBScript localScript = new WRBScript();
+			retValue = localScript.getFunctions().toString();
+			// x = localScript.getVariable("x"); //Hier kann ncits zurück kommen
+
+		} catch (Exception e) {
+			log.severe(format("%s.%s: %s ", getClass().getSimpleName(), "getFcts", e));
+			retValue = e.toString();
+		}
+		log.info(format("RET %s", retValue));
 		return retValue;
 	}
 
