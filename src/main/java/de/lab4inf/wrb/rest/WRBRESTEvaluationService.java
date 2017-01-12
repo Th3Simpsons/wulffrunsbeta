@@ -22,6 +22,8 @@ package de.lab4inf.wrb.rest;
 
 import static java.lang.String.format;
 
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Locale;
 
@@ -35,6 +37,7 @@ import javax.ws.rs.core.MediaType;
 
 import de.lab4inf.wrb.Function;
 import de.lab4inf.wrb.Integrator;
+import de.lab4inf.wrb.Main;
 import de.lab4inf.wrb.WRBScript;
 
 /**
@@ -71,9 +74,7 @@ public class WRBRESTEvaluationService extends AbstractWRBService {
 		double xmin = 0, xmax = 1, dx = 0.2;
 		boolean returnArray = true;
 		// boolean returnArray = true;
-	
-		
-		
+
 		String retValue;
 		try {
 			WRBScript localScript = new WRBScript();
@@ -98,12 +99,14 @@ public class WRBRESTEvaluationService extends AbstractWRBService {
 
 				for (double x = xmin; x <= xmax; x += dx) {
 					double y = f.eval(x);
-					retValue += format(Locale.US, fmt, x) + "," + format(Locale.US, fmt, y) //+ ",";
+					retValue += format(Locale.US, fmt, x) + "," + format(Locale.US, fmt, y) // +
+																							// ",";
 							+ (x + dx <= xmax ? "," : "");
 				}
 				double y = f.eval(xmax);
-				//retValue += format(Locale.US, fmt, xmax) + "," + format(Locale.US, fmt, y);
-				//+ (x + dx <= xmax ? "," : "");
+				// retValue += format(Locale.US, fmt, xmax) + "," +
+				// format(Locale.US, fmt, y);
+				// + (x + dx <= xmax ? "," : "");
 				retValue += "]";
 			} else {
 
@@ -119,7 +122,7 @@ public class WRBRESTEvaluationService extends AbstractWRBService {
 		log.info(format("RET %s", retValue));
 		return retValue;
 	}
-	
+
 	/**
 	 * REST service implementation of the sayHello RMI example. HTML formated.
 	 * 
@@ -165,6 +168,26 @@ public class WRBRESTEvaluationService extends AbstractWRBService {
 			retValue = e.toString();
 		}
 		log.info(format("RET %s", retValue));
+		return retValue;
+	}
+
+	@GET
+	@Path("picture")
+	@Produces(MediaType.TEXT_HTML)
+	@Consumes(MediaType.TEXT_PLAIN)
+	public String getPicture(@QueryParam("file") @DefaultValue("Wulff.txt") String file) {
+		log.info("GET picture");
+		double a = 0, b = 1;
+		// boolean returnArray = true;
+		String retValue;
+		try {
+			retValue = Main.readFile("src/main/" + file).replace("\n","\r\n");
+			//retValue = URLEncoder.encode(retValue, "UTF-8");
+
+		} catch (Exception e) {
+			log.severe(format("%s.%s: %s ", getClass().getSimpleName(), "getPicture", e));
+			retValue = e.toString();
+		}
 		return retValue;
 	}
 
