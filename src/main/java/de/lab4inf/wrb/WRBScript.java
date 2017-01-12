@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Locale;
 import java.util.Set;
 
 import org.antlr.v4.runtime.ANTLRErrorListener;
@@ -53,7 +54,7 @@ public class WRBScript implements Script {
 				}
 			}
 			newNumber = in.substring(a, b);
-			in = in.replace(newNumber, format("%.6f", x));
+			in = in.replace( newNumber, format(Locale.US,"%.6f", x));
 
 		}
 		

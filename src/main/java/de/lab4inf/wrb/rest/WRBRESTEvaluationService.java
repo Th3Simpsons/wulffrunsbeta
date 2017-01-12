@@ -97,20 +97,32 @@ public class WRBRESTEvaluationService extends AbstractWRBService {
 			if (returnArray) {
 				retValue = fctName + ": [";
 
-				for (double x = xmin; x <= xmax; x += dx) {
+/*				for (double x = xmin; x <= xmax+(dx*0.1) ; x += dx) {
 					double y = f.eval(x);
 					retValue += format(Locale.US, fmt, x) + "," + format(Locale.US, fmt, y) // +
 																							// ",";
-							+ (x + dx <= xmax ? "," : "");
+							+ (x + dx <= xmax+(dx*0.1) ? "," : "");
+				}
+	*/			
+				
+				for (double x = xmin; x < xmax-(dx*0.95) ; x += dx) {
+					double y = f.eval(x);
+					retValue += format(Locale.US, fmt, x) + "," + format(Locale.US, fmt, y)  + ",";																							// ",";
+					
 				}
 				double y = f.eval(xmax);
+				retValue += format(Locale.US, fmt, xmax) + "," + format(Locale.US, fmt, y)  ;		
+				
+				
+				
+				//double y = f.eval(xmax);
 				// retValue += format(Locale.US, fmt, xmax) + "," +
 				// format(Locale.US, fmt, y);
 				// + (x + dx <= xmax ? "," : "");
 				retValue += "]";
 			} else {
-
-				retValue = localScript.parse(fctName + "(1)") + "";
+				double x = localScript.getVariable("x");
+				retValue = localScript.parse(fctName + "(" +x +")") + "";
 				log.info(format("Evaluate %s(1) (This is bad... I guess)", fctName));
 
 			}
@@ -143,7 +155,8 @@ public class WRBRESTEvaluationService extends AbstractWRBService {
 		sb.append("<!DOCTYPE html><html><head><title>Hello WS</title></head>");
 		sb.append("<body><h1>WRB-Service</h1>");
 		sb.append(format("Class: %s <br>", this.getClass().getSimpleName()));
-		sb.append(format("Thread: %s <br>Time: %s<br>FunctionName: %s<br>def: %s", t, d, fctName, definition));
+		sb.append(format("Thread: %s <br>Time: %s<br>FunctionName: %s<br>def: %s <br>", t, d, fctName, definition));
+		sb.append("Result : " + getEvaluation(fctName, definition, fmt));
 		sb.append("</body></html>");
 		String retValue = sb.toString();
 		return retValue;

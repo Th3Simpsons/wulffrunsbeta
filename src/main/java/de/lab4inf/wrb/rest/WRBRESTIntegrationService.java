@@ -130,7 +130,8 @@ public class WRBRESTIntegrationService extends AbstractWRBService {
 		sb.append("<!DOCTYPE html><html><head><title>Hello WS</title></head>");
 		sb.append("<body><h1>WRB-Service</h1>");
 		sb.append(format("Class: %s <br>", this.getClass().getSimpleName()));
-		sb.append(format("Thread: %s <br>Time: %s<br>FunctionName: %s<br>def: %s", t, d, fctName, definition));
+		sb.append(format("Thread: %s <br>Time: %s<br>FunctionName: %s<br>def: %s<br>", t, d, fctName, definition));
+		sb.append("Result" + getFctIntegral(fctName, definition, fmt));
 		sb.append("</body></html>");
 		String retValue = sb.toString();
 		return retValue;

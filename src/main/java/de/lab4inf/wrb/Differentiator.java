@@ -4,7 +4,7 @@ public class Differentiator {
 
 	public native double differentiate(Function f, double x);
 
-	static boolean I_AM_AT_HOME = true;
+	static boolean I_AM_AT_HOME = false;
 	static {
 
 		if (I_AM_AT_HOME) {
